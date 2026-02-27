@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Backend API y WebSocket
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: maxim-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - OBS_WEBSOCKET_URL=ws://host.docker.internal:4455
+      - OBS_WEBSOCKET_PASSWORD=${OBS_PASSWORD:-}
+      - DATABASE_URL=postgresql://maxim:maxim123@postgres:5432/maxim_broadcast
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - media-storage:/app/media
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - maxim-network
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: maxim-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=http://localhost:4000
+      - VITE_WS_URL=ws://localhost:4000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - maxim-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: maxim-postgres
+    environment:
+      - POSTGRES_USER=maxim
+      - POSTGRES_PASSWORD=maxim123
+      - POSTGRES_DB=maxim_broadcast
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - maxim-network
+
+  # Redis para colas y cache
+  redis:
+    image: redis:7-alpine
+    container_name: maxim-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - maxim-network
+
+  # MinIO para almacenamiento (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    container_name: maxim-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=maxim
+      - MINIO_ROOT_PASSWORD=maxim123456
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      - maxim-network
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+  media-storage:
+
+networks:
+  maxim-network:
+    driver: bridge
