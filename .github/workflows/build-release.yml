@@ -1,0 +1,395 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - 'beta*'
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [x64, x86]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Install dependencies
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+
+      - name: Build OBS Core
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Visual Studio 17 2022" -A ${{ matrix.arch == 'x64' && 'x64' || 'Win32' }}
+          cmake --build . --config Release
+
+      - name: Build Backend
+        run: |
+          cd backend
+          npm install
+          npm run build
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Package Windows
+        run: |
+          mkdir package
+          xcopy /E /I build\rundir\Release package\obs
+          xcopy /E /I backend\dist package\backend
+          xcopy /E /I frontend\build package\frontend
+          copy README.md package\
+          copy RELEASE_NOTES.md package\
+
+      - name: Create ZIP
+        run: |
+          Compress-Archive -Path package\* -DestinationPath maxim-broadcast-1.0.0-beta-windows-${{ matrix.arch }}.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.arch }}
+          path: maxim-broadcast-1.0.0-beta-windows-${{ matrix.arch }}.zip
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          brew install cmake pkg-config
+
+      - name: Build OBS Core (Universal Binary)
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_BUILD_TYPE=Release
+          make -j$(sysctl -n hw.ncpu)
+
+      - name: Build Backend
+        run: |
+          cd backend
+          npm install
+          npm run build
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Package macOS
+        run: |
+          mkdir -p package/Maxim\ Broadcast.app/Contents/MacOS
+          mkdir -p package/Maxim\ Broadcast.app/Contents/Resources
+          cp -r build/rundir/Release/* package/Maxim\ Broadcast.app/Contents/MacOS/
+          cp -r backend/dist package/Maxim\ Broadcast.app/Contents/Resources/backend
+          cp -r frontend/build package/Maxim\ Broadcast.app/Contents/Resources/frontend
+          
+          # Create Info.plist
+          cat > package/Maxim\ Broadcast.app/Contents/Info.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>obs</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.estacionkusmedia.maxim-broadcast</string>
+              <key>CFBundleName</key>
+              <string>Maxim Broadcast</string>
+              <key>CFBundleVersion</key>
+              <string>1.0.0-beta</string>
+              <key>CFBundleShortVersionString</key>
+              <string>1.0.0</string>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Create DMG
+        run: |
+          hdiutil create -volname "Maxim Broadcast" -srcfolder package -ov -format UDZO maxim-broadcast-1.0.0-beta-macos-universal.dmg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-universal
+          path: maxim-broadcast-1.0.0-beta-macos-universal.dmg
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake git \
+            libx11-dev libgl1-mesa-dev libpulse-dev libasound2-dev \
+            libv4l-dev libavcodec-dev libavformat-dev libswscale-dev \
+            libfreetype6-dev libfontconfig1-dev libmbedtls-dev \
+            libjansson-dev libspeexdsp-dev libqt5x11extras5-dev \
+            qtbase5-dev qtbase5-private-dev libqt5svg5-dev \
+            libwayland-dev libxkbcommon-dev libxcomposite-dev \
+            libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev \
+            rpm
+
+      - name: Build OBS Core
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_BROWSER=OFF
+          make -j$(nproc)
+
+      - name: Build Backend
+        run: |
+          cd backend
+          npm install
+          npm run build
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Package DEB
+        run: |
+          mkdir -p package/DEBIAN
+          mkdir -p package/usr/local/bin
+          mkdir -p package/usr/share/maxim-broadcast
+          mkdir -p package/usr/share/applications
+          
+          cp -r build/rundir/Release/* package/usr/share/maxim-broadcast/
+          cp -r backend/dist package/usr/share/maxim-broadcast/backend
+          cp -r frontend/build package/usr/share/maxim-broadcast/frontend
+          
+          cat > package/DEBIAN/control << EOF
+          Package: maxim-broadcast
+          Version: 1.0.0-beta
+          Architecture: amd64
+          Maintainer: EstacionKusMedia <luisitoys12@github.com>
+          Description: Software Profesional de TV Playout y Producción en Vivo
+           Maxim Broadcast es una plataforma avanzada de producción audiovisual
+           basada en OBS Studio, diseñada para operación desde navegador web.
+          Depends: libqt5core5a, libqt5widgets5, libavcodec58, libavformat58
+          EOF
+          
+          cat > package/usr/share/applications/maxim-broadcast.desktop << EOF
+          [Desktop Entry]
+          Name=Maxim Broadcast
+          Comment=Software Profesional de TV Playout
+          Exec=/usr/share/maxim-broadcast/bin/64bit/obs
+          Icon=maxim-broadcast
+          Terminal=false
+          Type=Application
+          Categories=AudioVideo;
+          EOF
+          
+          dpkg-deb --build package maxim-broadcast-1.0.0-beta-linux-amd64.deb
+
+      - name: Package RPM
+        run: |
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          
+          cat > ~/rpmbuild/SPECS/maxim-broadcast.spec << 'EOF'
+          Name:           maxim-broadcast
+          Version:        1.0.0
+          Release:        beta
+          Summary:        Software Profesional de TV Playout y Producción en Vivo
+          License:        GPL-2.0
+          
+          %description
+          Maxim Broadcast es una plataforma avanzada de producción audiovisual
+          basada en OBS Studio, diseñada para operación desde navegador web.
+          
+          %install
+          mkdir -p %{buildroot}/usr/share/maxim-broadcast
+          cp -r build/rundir/Release/* %{buildroot}/usr/share/maxim-broadcast/
+          
+          %files
+          /usr/share/maxim-broadcast
+          EOF
+          
+          rpmbuild -bb ~/rpmbuild/SPECS/maxim-broadcast.spec
+          cp ~/rpmbuild/RPMS/x86_64/*.rpm maxim-broadcast-1.0.0-beta-linux-x86_64.rpm || true
+
+      - name: Create TAR.GZ
+        run: |
+          mkdir -p maxim-broadcast
+          cp -r build/rundir/Release/* maxim-broadcast/
+          cp -r backend/dist maxim-broadcast/backend
+          cp -r frontend/build maxim-broadcast/frontend
+          cp README.md RELEASE_NOTES.md BUILD_INSTRUCTIONS.md maxim-broadcast/
+          tar -czf maxim-broadcast-1.0.0-beta-linux-amd64.tar.gz maxim-broadcast
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            maxim-broadcast-1.0.0-beta-linux-amd64.deb
+            maxim-broadcast-1.0.0-beta-linux-amd64.tar.gz
+
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Create Android Project Structure
+        run: |
+          mkdir -p android/app/src/main/java/com/estacionkusmedia/maximbroadcast
+          mkdir -p android/app/src/main/res/values
+          mkdir -p android/app/src/main/assets
+
+      - name: Create AndroidManifest.xml
+        run: |
+          cat > android/app/src/main/AndroidManifest.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.estacionkusmedia.maximbroadcast">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.CAMERA" />
+              <uses-permission android:name="android.permission.RECORD_AUDIO" />
+              <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+              <application
+                  android:label="Maxim Broadcast"
+                  android:icon="@mipmap/ic_launcher">
+                  <activity android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+      - name: Create build.gradle
+        run: |
+          cat > android/app/build.gradle << 'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+          android {
+              namespace 'com.estacionkusmedia.maximbroadcast'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.estacionkusmedia.maximbroadcast"
+                  minSdk 26
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0.0-beta"
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                  }
+              }
+          }
+          EOF
+
+      - name: Build Frontend for Android
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          cp -r build ../android/app/src/main/assets/
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleRelease || echo "APK build skipped - needs full Android setup"
+
+      - name: Create placeholder APK info
+        run: |
+          echo "Android APK requires full Android development environment" > android-build-notes.txt
+          echo "To build manually, use Android Studio or:" >> android-build-notes.txt
+          echo "cd android && ./gradlew assembleRelease" >> android-build-notes.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-info
+          path: android-build-notes.txt
+
+  create-release:
+    name: Create Release
+    needs: [build-windows, build-macos, build-linux, build-android]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            windows-x64/*.zip
+            windows-x86/*.zip
+            macos-universal/*.dmg
+            linux-packages/*.deb
+            linux-packages/*.tar.gz
+            android-info/*.txt
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
