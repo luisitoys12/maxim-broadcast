@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Maxim Broadcast - iOS App Configuration -->
+<!-- Copyright (c) 2026 EstacionKusMedia -->
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Maxim Broadcast</string>
+    <key>CFBundleDisplayName</key>
+    <string>Maxim Broadcast</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.estacionkusmedia.maxim-broadcast</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleExecutable</key>
+    <string>MaximBroadcast</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+        <string>arm64</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIMainStoryboardFile</key>
+    <string>Main</string>
+    <key>MinimumOSVersion</key>
+    <string>16.0</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Maxim Broadcast necesita acceso a la camara para captura de video y streaming en vivo.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Maxim Broadcast necesita acceso al microfono para captura de audio y streaming.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Maxim Broadcast necesita acceso a la biblioteca de fotos para importar medios.</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Maxim Broadcast usa la red local para conectarse al servidor de produccion y dispositivos NDI.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>audio</string>
+        <string>processing</string>
+    </array>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+</dict>
+</plist>

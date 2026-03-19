@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Maxim Broadcast
+GenericName=Broadcast Software
+Comment=Plataforma profesional de produccion audiovisual con IA
+Exec=maxim-broadcast %U
+Icon=maxim-broadcast
+Terminal=false
+Type=Application
+Categories=AudioVideo;Video;Recorder;
+Keywords=streaming;broadcasting;recording;obs;maxim;
+StartupNotify=true
+StartupWMClass=maxim-broadcast
+MimeType=application/x-maxim-broadcast;
