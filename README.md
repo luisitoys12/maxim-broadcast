@@ -61,15 +61,22 @@
 
 | Funcion | Descripcion | Estado |
 |---------|------------|:------:|
-| **Lower Thirds** | Graficos dinamicos con animaciones profesionales | Listo |
-| **Templates** | 50+ plantillas para noticias, deportes, entretenimiento | Listo |
-| **Editor Dual** | Edicion no-lineal mientras se transmite en vivo | Listo |
-| **Produccion Pro** | Dashboard preview/program, multi-salida, mezcla de audio | Listo |
-| **Multi-Camara** | Hasta 12 fuentes, instant replay, auto-switching | Listo |
-| **IA Integrada** | Subtitulos automaticos, auto-framing, chroma key IA | Listo |
-| **Automatizacion** | Auto-director IA, highlights, transcripcion multiidioma | Listo |
-| **Playout 24/7** | Programacion automatica de contenido | Pronto |
-| **Llamadas VoIP** | Entrevistas integradas con SIP | Pronto |
+| **Lower Thirds** | Graficos dinamicos con animaciones profesionales | ✅ Listo |
+| **Templates** | 50+ plantillas para noticias, deportes, entretenimiento | ✅ Listo |
+| **Editor Dual** | Edicion no-lineal mientras se transmite en vivo | ✅ Listo |
+| **Produccion Pro** | Dashboard preview/program, multi-salida, mezcla de audio | ✅ Listo |
+| **Multi-Camara** | Hasta 12 fuentes, instant replay, auto-switching | ✅ Listo |
+| **IA Integrada** | Subtitulos automaticos, auto-framing, chroma key IA | ✅ Listo |
+| **Automatizacion** | Auto-director IA, highlights, transcripcion multiidioma | ✅ Listo |
+| **Playout 24/7** | Programacion automatica de contenido | 🔄 En Desarrollo |
+| **Llamadas VoIP** | Entrevistas integradas con SIP/WebRTC | 🔄 En Desarrollo |
+| **Multi-Usuario** | Colaboracion en tiempo real con roles y permisos | 🔄 En Desarrollo |
+| **Cloud Sync** | Almacenamiento y sincronizacion en la nube | 🔄 En Desarrollo |
+| **Multi-Streaming** | Transmision simultanea a 5+ plataformas | 📋 Planeado |
+| **Monetizacion** | Donaciones, suscripciones, publicidad integrada | 📋 Planeado |
+| **4K/8K** | Pipeline de ultra alta definicion | 📋 Planeado |
+| **Virtual Sets AR** | Sets virtuales 3D con realidad aumentada | 📋 Planeado |
+| **IA Director** | Director de produccion automatico con IA | 📋 Planeado |
 
 ### Lower Thirds Profesionales
 Sistema completo de graficos dinamicos para identificacion de personas, segmentos y contenido en vivo con diseños personalizables y animaciones fluidas.
@@ -247,11 +254,15 @@ docker-compose up -d
 - [x] Fase 6: Inteligencia Artificial
 - [x] Fase 7: Automatizacion Inteligente
 
-### En Desarrollo
-- [ ] Fase 8: Playout 24/7 y Llamadas VoIP (Q1 2027)
-- [ ] Fase 9: Colaboracion Multi-Usuario y Cloud (Q1 2027)
-- [ ] Fase 10: Monetizacion y Multi-Streaming (Q2 2027)
-- [ ] Fase 11: 4K/8K, AR, Virtual Sets, IA Director (Q2 2027)
+### En Desarrollo (Q1 2027)
+- [ ] Fase 8: Playout 24/7 y Llamadas VoIP → [Ver planificacion detallada](./docs/roadmap/fase-08-playout-voip.md)
+- [ ] Fase 9: Colaboracion Multi-Usuario y Cloud → [Ver planificacion detallada](./docs/roadmap/fase-09-colaboracion-cloud.md)
+
+### Planeado (Q2 2027)
+- [ ] Fase 10: Monetizacion y Multi-Streaming → [Ver planificacion detallada](./docs/roadmap/fase-10-monetizacion-multistreaming.md)
+- [ ] Fase 11: 4K/8K, AR, Virtual Sets, IA Director → [Ver planificacion detallada](./docs/roadmap/fase-11-4k-ar-virtual-sets.md)
+
+> Ver el [indice completo del roadmap](./docs/roadmap/README.md)
 
 ---
 
