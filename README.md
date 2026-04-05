@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.0.0-blue?style=for-the-badge&logo=obs-studio&logoColor=white" alt="Maxim Broadcast v1.0.0"/>
+  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.1.0-blue?style=for-the-badge&logo=obs-studio&logoColor=white" alt="Maxim Broadcast v1.0.0"/>
 </p>
 
 <h1 align="center">Maxim Broadcast</h1>
@@ -37,7 +37,7 @@
 
 ## Descargas
 
-### v1.0.0 — Lanzamiento Oficial
+### v1.1.0 — Backend + Frontend Funcional
 
 | Plataforma | Descarga | Requisitos |
 |:----------:|----------|:----------:|
@@ -301,7 +301,7 @@ Website: [luisitoys12.github.io/maxim-broadcast](https://luisitoys12.github.io/m
 
 ## Estado del Proyecto
 
-**v1.0.0 — Lanzamiento Oficial Estable**
+**v1.1.0 — Backend + Frontend Funcional Estable**
 
 Fases 1-7 completadas. Lower thirds, templates, editor dual, produccion profesional, multi-camara, inteligencia artificial y automatizacion completamente operativos. Disponible para Windows, macOS, Linux, Android e iOS.
 
