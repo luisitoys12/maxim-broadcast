@@ -1,37 +1,53 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.2.0-blue?style=for-the-badge&logo=obs-studio&logoColor=white" alt="Maxim Broadcast v1.0.0"/>
+  <img src="assets/icon.png" width="120" alt="Maxim Broadcast"/>
 </p>
 
 <h1 align="center">Maxim Broadcast</h1>
 
 <p align="center">
-  <strong>Software Inteligente de Broadcast Profesional</strong><br>
-  Produccion en vivo con IA, edicion dual, multi-camara y automatizacion — basado en OBS Studio
+  <strong>Fork profesional de OBS Studio con panel web, IA y automatizacion para broadcast 24/7</strong>
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.2.0-6366f1?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMSAxNEg5VjhIMXYySDh2NkgxMXYtNmgySDE1di0ySDExdjhoLTF6Ii8+PC9zdmc+" alt="v1.2.0"/>
   <a href="https://github.com/luisitoys12/maxim-broadcast/releases/latest">
-    <img src="https://img.shields.io/github/v/release/luisitoys12/maxim-broadcast?style=flat-square&label=Release&color=success" alt="Latest Release"/>
+    <img src="https://img.shields.io/github/v/release/luisitoys12/maxim-broadcast?style=flat-square&label=Release&color=22c55e" alt="Latest Release"/>
   </a>
   <a href="https://github.com/luisitoys12/maxim-broadcast/releases/latest">
-    <img src="https://img.shields.io/github/downloads/luisitoys12/maxim-broadcast/total?style=flat-square&label=Descargas&color=blue" alt="Downloads"/>
+    <img src="https://img.shields.io/github/downloads/luisitoys12/maxim-broadcast/total?style=flat-square&label=Descargas&color=6366f1" alt="Downloads"/>
   </a>
   <a href="https://github.com/luisitoys12/maxim-broadcast/blob/master/COPYING">
-    <img src="https://img.shields.io/badge/Licencia-GPL%20v2.0-red?style=flat-square" alt="License GPL v2.0"/>
+    <img src="https://img.shields.io/badge/Licencia-GPL%20v2.0-ef4444?style=flat-square" alt="GPL v2.0"/>
   </a>
-  <a href="https://github.com/luisitoys12/maxim-broadcast/stargazers">
-    <img src="https://img.shields.io/github/stars/luisitoys12/maxim-broadcast?style=flat-square&color=yellow" alt="Stars"/>
+  <a href="https://github.com/luisitoys12/maxim-broadcast/actions/workflows/ci.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/luisitoys12/maxim-broadcast/ci.yml?style=flat-square&label=CI" alt="CI"/>
   </a>
 </p>
 
 <p align="center">
+  <a href="#-que-es">¿Qué es?</a> •
   <a href="#-descargas">Descargas</a> •
   <a href="#-caracteristicas">Caracteristicas</a> •
-  <a href="#-instalacion">Instalacion</a> •
-  <a href="#-compatibilidad-obs">Compatibilidad OBS</a> •
-  <a href="#-roadmap">Roadmap</a> •
-  <a href="#-contribuir">Contribuir</a>
+  <a href="#-arquitectura">Arquitectura</a> •
+  <a href="#-compilar">Compilar</a> •
+  <a href="#-roadmap">Roadmap</a>
 </p>
+
+---
+
+## ¿Qué es?
+
+**Maxim Broadcast es un fork de OBS Studio** que extiende el motor de captura y streaming de OBS con:
+
+- Un **panel web** accesible desde cualquier navegador o dispositivo
+- Un **backend Node.js** que expone la funcionalidad de libobs via API REST y WebSocket
+- **IA integrada** para subtítulos, auto-framing, chroma key y generación de gráficos
+- **Playout 24/7** para operar canales de TV automatizados
+- **Lower thirds, templates y editor dual** sin salir del navegador
+
+A diferencia de OBS Studio (interfaz Qt local), Maxim Broadcast se controla completamente vía web — ideal para estudios remotos, canales de radio/TV y productoras que necesitan acceso desde múltiples dispositivos.
+
+El **core de captura, encoding y streaming sigue siendo libobs** (el mismo motor de OBS). Lo que Maxim agrega es la capa de control web, automatización e IA encima.
 
 ---
 
@@ -39,291 +55,209 @@
 
 ### v1.2.0 — Estable
 
-| Plataforma | Archivo | Requisitos |
-|:----------:|---------|:----------:|
-| **Windows 64-bit** | [`maxim-broadcast-v1.2.0-windows-x64.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-windows-x64.zip) | Windows 10/11 + Node.js 18+ |
-| **Ubuntu/Debian** | [`maxim-broadcast-v1.2.0-linux-amd64.deb`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-amd64.deb) | Ubuntu 20.04+ |
-| **Linux (tar.gz)** | [`maxim-broadcast-v1.2.0-linux-x64.tar.gz`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-x64.tar.gz) | Cualquier distro |
-| **macOS** | [`maxim-broadcast-v1.2.0-macos.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-macos.zip) | macOS 11+ + Node.js 18+ |
+> **Requisito:** [Node.js 18+](https://nodejs.org) instalado en el sistema.
 
-> Los checksums SHA-256 están en [`SHA256SUMS.txt`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/SHA256SUMS.txt)
+| Plataforma | Archivo | Instrucciones |
+|:----------:|---------|--------------|
+| **Windows 64-bit** | [`maxim-broadcast-v1.2.0-windows-x64.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-windows-x64.zip) | Extrae → doble clic en `INICIAR.bat` |
+| **Ubuntu / Debian** | [`maxim-broadcast-v1.2.0-linux-amd64.deb`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-amd64.deb) | `sudo dpkg -i *.deb` → `maxim-broadcast` |
+| **Linux (tar.gz)** | [`maxim-broadcast-v1.2.0-linux-x64.tar.gz`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-x64.tar.gz) | `tar -xzf *.tar.gz && ./start.sh` |
+| **macOS 11+** | [`maxim-broadcast-v1.2.0-macos.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-macos.zip) | Extrae → doble clic en `Iniciar Maxim Broadcast.command` |
+| **Docker** | `docker run -p 4000:4000 luisitoys12/maxim-broadcast` | Panel en http://localhost:4000 |
 
-### Requisito único: Node.js 18+
+> Checksums SHA-256 en [`SHA256SUMS.txt`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/SHA256SUMS.txt)
 
-Descarga Node.js en [nodejs.org](https://nodejs.org) si no lo tienes instalado.
+### Compilar con soporte nativo de OBS (captura real)
 
-### Inicio rápido
+Para captura de video/audio real necesitas compilar desde código fuente con libobs:
 
 ```bash
-# Windows — doble clic en INICIAR.bat
-
-# Linux / macOS
-tar -xzf maxim-broadcast-v1.2.0-linux-x64.tar.gz
-cd maxim-broadcast-v1.2.0-linux-x64
-./start.sh
-# Panel en http://localhost:4000
-
-# Ubuntu/Debian
-sudo dpkg -i maxim-broadcast-v1.2.0-linux-amd64.deb
-maxim-broadcast
-
-# Docker
-docker run -p 4000:4000 luisitoys12/maxim-broadcast:latest
+git clone --recursive https://github.com/luisitoys12/maxim-broadcast.git
+cd maxim-broadcast
+# Ver BUILD_INSTRUCTIONS.md para instrucciones completas por plataforma
 ```
 
 ---
 
 ## Caracteristicas
 
-### Funciones Implementadas en v1.0.0
+### Motor OBS (libobs) — Core nativo
 
-| Funcion | Descripcion | Estado |
-|---------|------------|:------:|
-| **Lower Thirds** | Graficos dinamicos con animaciones profesionales | ✅ Listo |
-| **Templates** | 50+ plantillas para noticias, deportes, entretenimiento | ✅ Listo |
-| **Editor Dual** | Edicion no-lineal mientras se transmite en vivo | ✅ Listo |
-| **Produccion Pro** | Dashboard preview/program, multi-salida, mezcla de audio | ✅ Listo |
-| **Multi-Camara** | Hasta 12 fuentes, instant replay, auto-switching | ✅ Listo |
-| **IA Integrada** | Subtitulos automaticos, auto-framing, chroma key IA | ✅ Listo |
-| **Automatizacion** | Auto-director IA, highlights, transcripcion multiidioma | ✅ Listo |
-| **Playout 24/7** | Programacion automatica de contenido | 🔄 En Desarrollo |
-| **Llamadas VoIP** | Entrevistas integradas con SIP/WebRTC | 🔄 En Desarrollo |
-| **Multi-Usuario** | Colaboracion en tiempo real con roles y permisos | 🔄 En Desarrollo |
-| **Cloud Sync** | Almacenamiento y sincronizacion en la nube | 🔄 En Desarrollo |
-| **Multi-Streaming** | Transmision simultanea a 5+ plataformas | 📋 Planeado |
-| **Monetizacion** | Donaciones, suscripciones, publicidad integrada | 📋 Planeado |
-| **4K/8K** | Pipeline de ultra alta definicion | 📋 Planeado |
-| **Virtual Sets AR** | Sets virtuales 3D con realidad aumentada | 📋 Planeado |
-| **IA Director** | Director de produccion automatico con IA | 📋 Planeado |
+| Componente | Descripcion |
+|-----------|------------|
+| **libobs** | Motor de captura, composicion y encoding heredado de OBS Studio 30.x |
+| **Plugins de captura** | Win Capture, DirectShow, V4L2, PipeWire, CoreAudio, AJA, DeckLink |
+| **Encoders** | x264, NVENC (NVIDIA), QSV (Intel), AMF (AMD), Apple VideoToolbox |
+| **Outputs** | RTMP, SRT, HLS, NDI, grabacion local MP4/MKV/MOV |
+| **Filtros** | Chroma key, LUT, noise gate, compresor, EQ, VST, delay |
+| **Servicios** | Twitch, YouTube, Facebook Live, RTMP custom, SRT custom |
 
-### Lower Thirds Profesionales
-Sistema completo de graficos dinamicos para identificacion de personas, segmentos y contenido en vivo con diseños personalizables y animaciones fluidas.
+### Panel Web (capa Maxim)
 
-### Sistema de Templates
-Biblioteca de plantillas profesionales prediseñadas para noticias, deportes, entretenimiento, entrevistas y programas corporativos, totalmente personalizables desde el dashboard web.
+| Funcion | Estado |
+|---------|:------:|
+| Dashboard con stats en tiempo real (FPS, bitrate, CPU, frames) | ✅ |
+| Gestion de escenas — crear, activar, eliminar | ✅ |
+| Gestion de fuentes por escena | ✅ |
+| Perfiles de streaming RTMP configurable | ✅ |
+| Biblioteca de medios con upload (video/audio/imagen) | ✅ |
+| Playout 24/7 — programacion con horario y repeticion | ✅ |
+| Autenticacion JWT — registro, login, roles | ✅ |
+| WebSocket — actualizacion en tiempo real sin recargar | ✅ |
+| Lower Thirds y graficos dinamicos | 🔄 En desarrollo |
+| Templates de produccion (noticias, deportes, entretenimiento) | 🔄 En desarrollo |
+| Editor de video dual (live + pregrabado simultaneo) | 🔄 En desarrollo |
+| Llamadas VoIP integradas (SIP/WebRTC) | 🔄 En desarrollo |
+| Multi-streaming simultaneo (5+ plataformas) | 📋 Planeado |
+| IA: subtitulos, auto-framing, chroma key inteligente | 📋 Planeado |
+| Colaboracion multi-usuario en tiempo real | 📋 Planeado |
 
-### Editor de Video Dual
-Edicion de contenido pregrabado mientras produces en vivo simultaneamente, con timeline no-lineal, recorte instantaneo y exportacion multi-formato sin interrumpir la transmision.
+### Compatibilidad con OBS
 
-### Produccion Profesional
-Dashboard avanzado con preview/program, multiples salidas simultaneas (streaming, grabacion, NDI), transiciones profesionales y mezclador de audio con EQ/compresor.
+Maxim Broadcast mantiene **compatibilidad directa** con el ecosistema OBS:
 
-### Multi-Camara Avanzado
-Soporte hasta 12 fuentes simultaneas, instant replay con control de velocidad, auto-switching inteligente y preset manager.
-
-### Inteligencia Artificial
-Generacion de graficos con IA, subtitulos automaticos, auto-framing con deteccion facial, chroma key mejorado y generacion de thumbnails.
-
-### Automatizacion Inteligente
-Auto-director con IA, generacion de highlights, transcripcion multiidioma, analytics de audiencia y ajuste automatico de audio.
-
----
-
-## Vision del Proyecto
-
-Transformar OBS Studio en una solucion completa de broadcast que combine:
-
-- **Produccion en vivo** con switching multi-camara avanzado
-- **Edicion de video** integrada en tiempo real
-- **Generacion AI** para graficos, subtitulos y contenido automatizado
-- **Llamadas integradas** para entrevistas y transmisiones remotas
-- **Playout automatico** para canales de TV 24/7
-- **Operacion web-based** accesible desde cualquier dispositivo
-
----
-
-## Compatibilidad OBS
-
-Maxim Broadcast mantiene **compatibilidad completa** con plugins de OBS Studio:
-
-- Fuentes de video (capturas, navegador, NDI, etc.)
-- Filtros de audio y video
-- Codecs y encoders (x264, NVENC, QSV, VCE)
-- Servicios de streaming (Twitch, YouTube, Facebook, RTMP custom)
-- Transiciones personalizadas
-- Importacion directa de perfiles y escenas de OBS
+- Importa perfiles y colecciones de escenas de OBS Studio
+- Compatible con todos los plugins de OBS (.dll / .so / .dylib)
+- Mismos codecs y servicios de streaming
+- Transiciones personalizadas de OBS funcionan sin cambios
 
 ---
 
 ## Arquitectura
 
 ```
-                    Frontend Web (React)
-                  Dashboard de produccion
-                   Editor de video dual
-                  Gestion de escenas + IA
-                          |
-                  WebSocket / REST API
-                          |
-                  Backend (Node.js + TS)
-                    API Gateway
-                  Sesiones + Redis
-                 Procesamiento AI
-                          |
-                   Native Bindings
-                          |
-                    libobs (OBS Core)
-                 Captura video/audio
-                Rendering + Composicion
-                Encoding + Streaming
-                 Sistema de plugins
+┌─────────────────────────────────────────────┐
+│           PANEL WEB (React + Vite)          │
+│  Dashboard · Escenas · Streaming · Playout  │
+└─────────────────┬───────────────────────────┘
+                  │ HTTP REST + WebSocket
+┌─────────────────▼───────────────────────────┐
+│         BACKEND (Node.js / Express)         │
+│   Auth JWT · API · Socket.io · Multer      │
+└─────────────────┬───────────────────────────┘
+                  │ N-API / node-ffi (en desarrollo)
+┌─────────────────▼───────────────────────────┐
+│              libobs (C/C++)                 │
+│   Captura · Composicion · Encoding         │
+│   Streaming · Grabacion · Plugins          │
+└─────────────────────────────────────────────┘
 ```
 
----
+**Stack tecnologico:**
 
-## Stack Tecnologico
-
-**Backend**: Node.js 20+, TypeScript, Express.js, Socket.io  
-**Frontend**: React 18, WebRTC, Canvas API, Tailwind CSS  
-**Core**: libobs (C/C++), FFmpeg  
-**AI/ML**: Whisper, Stable Diffusion, OpenCV, TensorFlow.js  
-**Infra**: Docker, Redis, PostgreSQL, NGINX  
-**Mobile**: Kotlin + Jetpack Compose (Android), Swift + UIKit (iOS)
+- **Core:** libobs (fork de OBS Studio 30.x), FFmpeg, x264, NVENC
+- **Backend:** Node.js 20, Express, Socket.io, Multer, JWT
+- **Frontend:** React 18, Vite 4, Tailwind CSS, Zustand
+- **Plugins:** C/C++ — mismos que OBS Studio
+- **Deploy:** Docker, docker-compose
 
 ---
 
-## Instalacion
+## Compilar
+
+> Para el panel web no necesitas compilar — descarga el paquete de Releases.
+> Compilar desde fuente solo es necesario para habilitar la captura nativa de OBS.
+
+### Linux (Ubuntu 22.04+)
+
+```bash
+# Dependencias
+sudo apt-get install -y cmake ninja-build pkg-config \
+  libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
+  libswresample-dev libswscale-dev libx264-dev \
+  libmbedtls-dev libgl1-mesa-dev libjansson-dev \
+  libluajit-5.1-dev python3-dev \
+  libx11-dev libxcb-randr0-dev libxcb-shm0-dev \
+  qt6-base-dev libpipewire-0.3-dev nodejs npm
+
+# Clonar con submodulos
+git clone --recursive https://github.com/luisitoys12/maxim-broadcast.git
+cd maxim-broadcast
+
+# Compilar OBS core
+cmake --preset linux-x86_64 -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+
+# Iniciar backend + frontend
+cd backend && npm install && node src/index.js
+```
 
 ### Windows
-```bash
-# Descargar e instalar
-maxim-broadcast-1.0.0-windows-x64-setup.exe
 
-# O usar la version portable (sin instalacion)
-maxim-broadcast-1.0.0-windows-x64-portable.zip
+```bash
+# Requisitos: Visual Studio 2022, CMake, Qt 6, Node.js 18+
+cmake --preset windows-x64 -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+
+cd backend && npm install && node src/index.js
 ```
 
 ### macOS
+
 ```bash
-# Descargar DMG, montar y arrastrar a Aplicaciones
-maxim-broadcast-1.0.0-macos-universal.dmg
+brew install cmake ninja qt@6 swig mbedtls node
+cmake --preset macos-arm64 -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+
+cd backend && npm install && node src/index.js
 ```
 
-### Linux
-```bash
-# Ubuntu/Debian
-sudo dpkg -i maxim-broadcast-1.0.0-linux-amd64.deb
-sudo apt-get install -f
-
-# Fedora/RHEL
-sudo rpm -i maxim-broadcast-1.0.0-linux-x86_64.rpm
-
-# AppImage (cualquier distro)
-chmod +x maxim-broadcast-1.0.0-linux-x86_64.AppImage
-./maxim-broadcast-1.0.0-linux-x86_64.AppImage
-```
-
-### Android
-```bash
-# Descargar APK
-maxim-broadcast-1.0.0-android-universal.apk
-# Permitir fuentes desconocidas > Instalar
-```
-
-### iOS
-```bash
-# Disponible via TestFlight o sideload
-maxim-broadcast-1.0.0-ios.ipa
-```
-
-### Desde Codigo Fuente
-```bash
-git clone https://github.com/luisitoys12/maxim-broadcast.git
-cd maxim-broadcast
-npm install
-./build.sh
-docker-compose up -d
-# Acceder en http://localhost:3000
-```
-
----
-
-## Requisitos del Sistema
-
-### Desktop (Minimos)
-- CPU: Intel Core i5 / AMD Ryzen 5 (4 cores)
-- RAM: 8 GB
-- GPU: H.264 compatible (Intel HD 530+, GTX 950+, RX 460+)
-- Disco: 2 GB libres
-- Internet: 5 Mbps
-
-### Desktop (Recomendados)
-- CPU: Intel Core i7 / AMD Ryzen 7 (8+ cores)
-- RAM: 16 GB+
-- GPU: NVIDIA GTX 1060+ / AMD RX 580+ con NVENC/VCE
-- Disco: SSD con 10 GB libres
-- Internet: 25+ Mbps
-
-### Movil
-- Procesador: Snapdragon 855+ / Apple A13+
-- RAM: 4 GB+
-- Almacenamiento: 500 MB libres
+Ver [BUILD_INSTRUCTIONS.md](./BUILD_INSTRUCTIONS.md) para guía completa.
 
 ---
 
 ## Roadmap
 
-### Completado (v1.0.0)
-- [x] Fase 1: MVP Web-Based
-- [x] Fase 2: Lower Thirds y Templates
-- [x] Fase 3: Editor de Video Dual
-- [x] Fase 4: Produccion Profesional
-- [x] Fase 5: Multi-Camara Avanzado
-- [x] Fase 6: Inteligencia Artificial
-- [x] Fase 7: Automatizacion Inteligente
+### Completado
+
+- [x] **Fase 1–7 (v1.0.0):** Panel web, escenas, streaming RTMP, biblioteca de medios, playout, auth JWT, WebSocket stats
+- [x] **v1.1.0:** Icono oficial, GitHub Actions (CI/Release/Docker), Dockerfile
+- [x] **v1.2.0:** Paquetes descargables Windows/Linux/macOS, README completo
 
 ### En Desarrollo (Q1 2027)
-- [ ] Fase 8: Playout 24/7 y Llamadas VoIP → [Ver planificacion detallada](./docs/roadmap/fase-08-playout-voip.md)
-- [ ] Fase 9: Colaboracion Multi-Usuario y Cloud → [Ver planificacion detallada](./docs/roadmap/fase-09-colaboracion-cloud.md)
+
+- [ ] **Fase 8:** Playout 24/7 avanzado + Llamadas VoIP (SIP/WebRTC) — [Planificacion](./docs/roadmap/fase-08-playout-voip.md)
+- [ ] **Fase 9:** Colaboracion multi-usuario y Cloud Sync — [Planificacion](./docs/roadmap/fase-09-colaboracion-cloud.md)
+- [ ] Bindings N-API para control directo de libobs desde Node.js
 
 ### Planeado (Q2 2027)
-- [ ] Fase 10: Monetizacion y Multi-Streaming → [Ver planificacion detallada](./docs/roadmap/fase-10-monetizacion-multistreaming.md)
-- [ ] Fase 11: 4K/8K, AR, Virtual Sets, IA Director → [Ver planificacion detallada](./docs/roadmap/fase-11-4k-ar-virtual-sets.md)
 
-> Ver el [indice completo del roadmap](./docs/roadmap/README.md)
+- [ ] **Fase 10:** Multi-streaming simultaneo y monetizacion — [Planificacion](./docs/roadmap/fase-10-monetizacion-multistreaming.md)
+- [ ] **Fase 11:** 4K/8K, AR, Virtual Sets, IA Director — [Planificacion](./docs/roadmap/fase-11-4k-ar-virtual-sets.md)
+
+Ver [indice completo del roadmap](./docs/roadmap/README.md).
 
 ---
 
 ## Contribuir
 
-Las contribuciones son bienvenidas. Este es un proyecto de codigo abierto bajo GPL v2.0.
+Contribuciones bienvenidas. Proyecto de codigo abierto bajo GPL v2.0.
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcion`)
-3. Commit tus cambios (`git commit -m 'Agregar nueva funcion'`)
-4. Push a la rama (`git push origin feature/nueva-funcion`)
-5. Abre un Pull Request
+```bash
+# Fork → clone → rama
+git checkout -b feature/mi-funcion
 
----
-
-## Creditos y Licencia
-
-**Basado en OBS Studio**  
-Proyecto original: [obsproject/obs-studio](https://github.com/obsproject/obs-studio)  
-Licencia: GNU GPL v2.0
-
-**Maxim Broadcast**  
-Desarrollado por: EstacionKusMedia  
-Mantenedor: [@luisitoys12](https://github.com/luisitoys12)  
-Licencia: GNU GPL v2.0 (compatible con OBS)
+# Commit y PR
+git commit -m "feat: descripcion de la funcion"
+git push origin feature/mi-funcion
+```
 
 ---
 
-## Contacto
+## Creditos
 
-**EstacionKusMedia**  
-GitHub: [@luisitoys12](https://github.com/luisitoys12)  
-Website: [luisitoys12.github.io/maxim-broadcast](https://luisitoys12.github.io/maxim-broadcast/)
+**Basado en OBS Studio**
+- Proyecto original: [obsproject/obs-studio](https://github.com/obsproject/obs-studio)
+- Licencia original: GNU GPL v2.0
 
----
-
-## Estado del Proyecto
-
-**v1.1.0 — Backend + Frontend Funcional Estable**
-
-Fases 1-7 completadas. Lower thirds, templates, editor dual, produccion profesional, multi-camara, inteligencia artificial y automatizacion completamente operativos. Disponible para Windows, macOS, Linux, Android e iOS.
+**Maxim Broadcast**
+- Desarrollado por: EstacionKusMedia
+- Mantenedor: [@luisitoys12](https://github.com/luisitoys12)
+- Licencia: GNU GPL v2.0
 
 ---
 
-*Maxim Broadcast — Broadcast Profesional, Accesible Desde Cualquier Lugar*  
-*Desarrollado con pasion desde Irapuato, Mexico*
+<p align="center">
+  <em>Maxim Broadcast — Fork de OBS para broadcast profesional accesible desde cualquier lugar</em><br>
+  <em>Desarrollado con pasion desde Irapuato, Guanajuato, Mexico</em>
+</p>
