@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.1.0-blue?style=for-the-badge&logo=obs-studio&logoColor=white" alt="Maxim Broadcast v1.0.0"/>
+  <img src="https://img.shields.io/badge/Maxim_Broadcast-v1.2.0-blue?style=for-the-badge&logo=obs-studio&logoColor=white" alt="Maxim Broadcast v1.0.0"/>
 </p>
 
 <h1 align="center">Maxim Broadcast</h1>
@@ -37,21 +37,39 @@
 
 ## Descargas
 
-### v1.1.0 — Backend + Frontend Funcional
+### v1.2.0 — Estable
 
-| Plataforma | Descarga | Requisitos |
-|:----------:|----------|:----------:|
-| **Windows 64-bit** | [`maxim-broadcast-1.0.0-windows-x64-setup.exe`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-windows-x64-setup.exe) | Windows 10/11 |
-| **Windows 32-bit** | [`maxim-broadcast-1.0.0-windows-x86-setup.exe`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-windows-x86-setup.exe) | Windows 10/11 |
-| **Windows Portable** | [`maxim-broadcast-1.0.0-windows-x64-portable.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-windows-x64-portable.zip) | Windows 10/11 |
-| **macOS Universal** | [`maxim-broadcast-1.0.0-macos-universal.dmg`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-macos-universal.dmg) | macOS 11+ |
-| **Ubuntu/Debian** | [`maxim-broadcast-1.0.0-linux-amd64.deb`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-linux-amd64.deb) | Ubuntu 20.04+ |
-| **Fedora/RHEL** | [`maxim-broadcast-1.0.0-linux-x86_64.rpm`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-linux-x86_64.rpm) | Fedora 35+ |
-| **Linux AppImage** | [`maxim-broadcast-1.0.0-linux-x86_64.AppImage`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-linux-x86_64.AppImage) | Cualquier distro |
-| **Android APK** | [`maxim-broadcast-1.0.0-android-universal.apk`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-android-universal.apk) | Android 8.0+ |
-| **iOS IPA** | [`maxim-broadcast-1.0.0-ios.ipa`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.0.0/maxim-broadcast-1.0.0-ios.ipa) | iOS 16.0+ |
+| Plataforma | Archivo | Requisitos |
+|:----------:|---------|:----------:|
+| **Windows 64-bit** | [`maxim-broadcast-v1.2.0-windows-x64.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-windows-x64.zip) | Windows 10/11 + Node.js 18+ |
+| **Ubuntu/Debian** | [`maxim-broadcast-v1.2.0-linux-amd64.deb`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-amd64.deb) | Ubuntu 20.04+ |
+| **Linux (tar.gz)** | [`maxim-broadcast-v1.2.0-linux-x64.tar.gz`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-linux-x64.tar.gz) | Cualquier distro |
+| **macOS** | [`maxim-broadcast-v1.2.0-macos.zip`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/maxim-broadcast-v1.2.0-macos.zip) | macOS 11+ + Node.js 18+ |
 
-> Los checksums SHA-256 estan disponibles en el [release](https://github.com/luisitoys12/maxim-broadcast/releases/latest).
+> Los checksums SHA-256 están en [`SHA256SUMS.txt`](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.2.0/SHA256SUMS.txt)
+
+### Requisito único: Node.js 18+
+
+Descarga Node.js en [nodejs.org](https://nodejs.org) si no lo tienes instalado.
+
+### Inicio rápido
+
+```bash
+# Windows — doble clic en INICIAR.bat
+
+# Linux / macOS
+tar -xzf maxim-broadcast-v1.2.0-linux-x64.tar.gz
+cd maxim-broadcast-v1.2.0-linux-x64
+./start.sh
+# Panel en http://localhost:4000
+
+# Ubuntu/Debian
+sudo dpkg -i maxim-broadcast-v1.2.0-linux-amd64.deb
+maxim-broadcast
+
+# Docker
+docker run -p 4000:4000 luisitoys12/maxim-broadcast:latest
+```
 
 ---
 
