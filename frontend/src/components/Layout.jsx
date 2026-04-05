@@ -1,12 +1,7 @@
-import { Link, useLocation } from 'react-router-dom'
-import { 
-  Home, 
-  Layers, 
-  Radio, 
-  Film, 
-  Calendar,
-  Settings
-} from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Home, Layers, Radio, Film, Calendar, LogOut } from 'lucide-react'
+import { useAuthStore } from '../store/authStore'
+import { useSocketStore } from '../store/socketStore'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
@@ -18,43 +13,52 @@ const navigation = [
 
 export default function Layout({ children }) {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout } = useAuthStore()
+  const { connected } = useSocketStore()
+
+  const handleLogout = () => { logout(); navigate('/login') }
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 border-r border-gray-700">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-primary-500">Maxim Broadcast</h1>
-          <p className="text-sm text-gray-400 mt-1">Control Panel</p>
+      <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+        <div className="p-5 border-b border-gray-700">
+          <h1 className="text-xl font-bold text-primary-400">Maxim Broadcast</h1>
+          <div className="flex items-center gap-1.5 mt-1">
+            <div className={`w-2 h-2 rounded-full ${connected ? 'bg-success-500' : 'bg-gray-500'}`} />
+            <span className="text-xs text-gray-400">{connected ? 'Conectado' : 'Sin conexión'}</span>
+          </div>
         </div>
-        
-        <nav className="px-3 space-y-1">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href
-            const Icon = item.icon
-            
+
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          {navigation.map(({ name, href, icon: Icon }) => {
+            const active = location.pathname === href
             return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-primary-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-700'
-                }`}
-              >
-                <Icon size={20} />
-                <span>{item.name}</span>
+              <Link key={name} to={href}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm font-medium ${
+                  active ? 'bg-primary-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+                }`}>
+                <Icon size={18} />
+                {name}
               </Link>
             )
           })}
         </nav>
+
+        <div className="p-4 border-t border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">{user?.username || 'Usuario'}</p>
+              <p className="text-xs text-gray-400 capitalize">{user?.role}</p>
+            </div>
+            <button onClick={handleLogout} className="text-gray-400 hover:text-danger-400 transition-colors">
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   )
 }

@@ -1,27 +1,54 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useAuthStore } from './store/authStore'
+import { useSocketStore } from './store/socketStore'
 import Layout from './components/Layout'
+import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Scenes from './pages/Scenes'
 import StreamSettings from './pages/StreamSettings'
 import MediaLibrary from './pages/MediaLibrary'
 import Playout from './pages/Playout'
 
-function App() {
+function Protected({ children }) {
+  const token = useAuthStore(s => s.token)
+  if (!token) return <Navigate to="/login" replace />
+  return children
+}
+
+export default function App() {
+  const { token, fetchMe } = useAuthStore()
+  const { connect, disconnect } = useSocketStore()
+
+  useEffect(() => {
+    if (token) {
+      fetchMe()
+      connect()
+    } else {
+      disconnect()
+    }
+  }, [token])
+
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/scenes" element={<Scenes />} />
-          <Route path="/stream" element={<StreamSettings />} />
-          <Route path="/media" element={<MediaLibrary />} />
-          <Route path="/playout" element={<Playout />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/*" element={
+          <Protected>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/scenes" element={<Scenes />} />
+                <Route path="/stream" element={<StreamSettings />} />
+                <Route path="/media" element={<MediaLibrary />} />
+                <Route path="/playout" element={<Playout />} />
+              </Routes>
+            </Layout>
+          </Protected>
+        } />
+      </Routes>
       <Toaster position="top-right" />
     </Router>
   )
 }
-
-export default App

@@ -6,6 +6,10 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { createLogger, format, transports } from 'winston';
 import { mkdirSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { join, dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import apiRoutes from './routes/api.js';
 import { socketHandler } from './websocket/socketHandler.js';
@@ -48,6 +52,10 @@ app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve frontend in production
+const frontendDist = join(__dirname, '../../frontend/dist');
+app.use(express.static(frontendDist));
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', version: '1.0.0-beta', timestamp: new Date().toISOString() });
@@ -55,6 +63,11 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api', apiRoutes);
+
+// SPA fallback — must be after /api routes
+app.get('*', (req, res) => {
+  res.sendFile(join(frontendDist, 'index.html'));
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
