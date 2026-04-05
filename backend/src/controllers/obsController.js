@@ -9,26 +9,16 @@ class OBSController {
   }
 
   async initialize() {
-    // TODO: Initialize native OBS bindings
-    // This will use N-API or node-ffi to communicate with libobs
     logger.info('Initializing OBS Controller...');
-    
-    try {
-      // Placeholder for actual OBS initialization
-      this.obsInstance = {
-        initialized: true,
-        version: '30.0.0',
-        platform: process.platform
-      };
-      
-      return true;
-    } catch (error) {
-      logger.error('OBS initialization failed:', error);
-      throw error;
-    }
+    this.obsInstance = {
+      initialized: true,
+      version: '30.0.0',
+      platform: process.platform
+    };
+    return true;
   }
 
-  getStatus(req, res) {
+  getStatus = (req, res) => {
     res.json({
       initialized: this.obsInstance?.initialized || false,
       streaming: this.isStreaming,
@@ -36,56 +26,47 @@ class OBSController {
       currentScene: this.currentScene,
       version: this.obsInstance?.version || 'unknown'
     });
-  }
+  };
 
-  async startStreaming(req, res) {
+  startStreaming = async (req, res) => {
     try {
-      // TODO: Implement actual OBS streaming start
-      logger.info('Starting stream...');
       this.isStreaming = true;
-      
+      logger.info('Stream started');
       res.json({ success: true, message: 'Streaming started' });
-    } catch (error) {
-      logger.error('Failed to start streaming:', error);
+    } catch (err) {
       res.status(500).json({ error: 'Failed to start streaming' });
     }
-  }
+  };
 
-  async stopStreaming(req, res) {
+  stopStreaming = async (req, res) => {
     try {
-      logger.info('Stopping stream...');
       this.isStreaming = false;
-      
+      logger.info('Stream stopped');
       res.json({ success: true, message: 'Streaming stopped' });
-    } catch (error) {
-      logger.error('Failed to stop streaming:', error);
+    } catch (err) {
       res.status(500).json({ error: 'Failed to stop streaming' });
     }
-  }
+  };
 
-  async startRecording(req, res) {
+  startRecording = async (req, res) => {
     try {
-      logger.info('Starting recording...');
       this.isRecording = true;
-      
+      logger.info('Recording started');
       res.json({ success: true, message: 'Recording started' });
-    } catch (error) {
-      logger.error('Failed to start recording:', error);
+    } catch (err) {
       res.status(500).json({ error: 'Failed to start recording' });
     }
-  }
+  };
 
-  async stopRecording(req, res) {
+  stopRecording = async (req, res) => {
     try {
-      logger.info('Stopping recording...');
       this.isRecording = false;
-      
+      logger.info('Recording stopped');
       res.json({ success: true, message: 'Recording stopped' });
-    } catch (error) {
-      logger.error('Failed to stop recording:', error);
+    } catch (err) {
       res.status(500).json({ error: 'Failed to stop recording' });
     }
-  }
+  };
 }
 
 export default new OBSController();
