@@ -1,0 +1,305 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag de versión (ej: v1.2.0)'
+        required: true
+        default: 'v1.1.0'
+
+permissions:
+  contents: write
+
+env:
+  VERSION: ${{ github.ref_name || inputs.tag }}
+
+jobs:
+  # ─────────────────────────────────────────────
+  # BUILD BACKEND + FRONTEND
+  # ─────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & build backend
+        run: |
+          cd backend
+          npm ci
+          mkdir -p dist
+          cp -r src/* dist/
+          cp package.json dist/
+          cp .env.example dist/.env.example
+
+      - name: Install & build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            backend/
+            frontend/dist/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────
+  # PACKAGE LINUX (.deb + .tar.gz)
+  # ─────────────────────────────────────────────
+  package-linux:
+    name: Package Linux
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Build backend + frontend
+        run: |
+          cd backend && npm ci
+          cd ../frontend && npm ci && npm run build
+
+      - name: Create .tar.gz package
+        run: |
+          TAG=${{ env.VERSION }}
+          PKG="maxim-broadcast-${TAG}-linux-x64"
+          mkdir -p "$PKG/backend" "$PKG/frontend"
+
+          cp -r backend/src backend/package.json backend/.env.example "$PKG/backend/"
+          cp -r frontend/dist/* "$PKG/frontend/"
+          cp README.md RELEASE_NOTES.md "$PKG/"
+          cp assets/icon.png "$PKG/" 2>/dev/null || true
+
+          cat > "$PKG/start.sh" << 'EOF'
+          #!/bin/bash
+          cd "$(dirname "$0")/backend"
+          [ ! -f .env ] && cp .env.example .env
+          npm install --omit=dev
+          node src/index.js
+          EOF
+          chmod +x "$PKG/start.sh"
+
+          tar -czf "${PKG}.tar.gz" "$PKG"
+
+      - name: Create .deb package
+        run: |
+          TAG=${{ env.VERSION }}
+          PKG_NAME="maxim-broadcast"
+          VER="${TAG#v}"
+          DEB_DIR="deb-build"
+
+          mkdir -p "$DEB_DIR/DEBIAN"
+          mkdir -p "$DEB_DIR/usr/share/maxim-broadcast/backend"
+          mkdir -p "$DEB_DIR/usr/share/maxim-broadcast/frontend"
+          mkdir -p "$DEB_DIR/usr/share/applications"
+          mkdir -p "$DEB_DIR/usr/share/pixmaps"
+          mkdir -p "$DEB_DIR/usr/bin"
+
+          cp -r backend/src backend/package.json backend/.env.example \
+            "$DEB_DIR/usr/share/maxim-broadcast/backend/"
+          cp -r frontend/dist/* "$DEB_DIR/usr/share/maxim-broadcast/frontend/"
+          cp assets/icon.png "$DEB_DIR/usr/share/pixmaps/maxim-broadcast.png" 2>/dev/null || true
+
+          cat > "$DEB_DIR/DEBIAN/control" << EOF
+          Package: maxim-broadcast
+          Version: $VER
+          Architecture: amd64
+          Maintainer: EstacionKusMedia <luisitoys12@github.com>
+          Description: Software Profesional de Broadcast y TV Playout
+           Panel web para produccion en vivo, streaming RTMP, gestion de escenas,
+           biblioteca de medios y playout 24/7.
+          Depends: nodejs (>= 18)
+          Homepage: https://github.com/luisitoys12/maxim-broadcast
+          EOF
+
+          cat > "$DEB_DIR/usr/share/applications/maxim-broadcast.desktop" << EOF
+          [Desktop Entry]
+          Name=Maxim Broadcast
+          Comment=Software Profesional de Broadcast
+          Exec=/usr/bin/maxim-broadcast
+          Icon=maxim-broadcast
+          Terminal=false
+          Type=Application
+          Categories=AudioVideo;Video;
+          EOF
+
+          cat > "$DEB_DIR/usr/bin/maxim-broadcast" << 'EOF'
+          #!/bin/bash
+          cd /usr/share/maxim-broadcast/backend
+          [ ! -f .env ] && cp .env.example .env
+          npm install --omit=dev --prefix /usr/share/maxim-broadcast/backend
+          node src/index.js &
+          sleep 2
+          xdg-open http://localhost:4000 2>/dev/null || true
+          EOF
+          chmod +x "$DEB_DIR/usr/bin/maxim-broadcast"
+
+          dpkg-deb --build "$DEB_DIR" "maxim-broadcast-${TAG}-linux-amd64.deb"
+
+      - name: Upload Linux packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: |
+            maxim-broadcast-*-linux-*.tar.gz
+            maxim-broadcast-*-linux-*.deb
+
+  # ─────────────────────────────────────────────
+  # PACKAGE WINDOWS (.zip portable)
+  # ─────────────────────────────────────────────
+  package-windows:
+    name: Package Windows
+    runs-on: windows-2022
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & build
+        run: |
+          cd backend; npm ci
+          cd ../frontend; npm ci; npm run build
+
+      - name: Create ZIP portable
+        shell: pwsh
+        run: |
+          $tag = "${{ env.VERSION }}"
+          $pkg = "maxim-broadcast-${tag}-windows-x64"
+          New-Item -ItemType Directory -Path "$pkg/backend", "$pkg/frontend" -Force
+
+          Copy-Item -Recurse backend/src "$pkg/backend/src"
+          Copy-Item backend/package.json "$pkg/backend/"
+          Copy-Item backend/.env.example "$pkg/backend/.env.example"
+          Copy-Item -Recurse frontend/dist/* "$pkg/frontend/"
+          Copy-Item README.md, RELEASE_NOTES.md "$pkg/"
+          if (Test-Path assets/icon.png) { Copy-Item assets/icon.png "$pkg/" }
+
+          @'
+          @echo off
+          cd /d "%~dp0backend"
+          if not exist .env copy .env.example .env
+          npm install --omit=dev
+          start /b node src/index.js
+          timeout /t 2
+          start http://localhost:4000
+          '@  | Out-File -Encoding ASCII "$pkg/start.bat"
+
+          Compress-Archive -Path "$pkg/*" -DestinationPath "${pkg}.zip"
+
+      - name: Upload Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-package
+          path: maxim-broadcast-*-windows-*.zip
+
+  # ─────────────────────────────────────────────
+  # PACKAGE macOS (.zip)
+  # ─────────────────────────────────────────────
+  package-macos:
+    name: Package macOS
+    runs-on: macos-14
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & build
+        run: |
+          cd backend && npm ci
+          cd ../frontend && npm ci && npm run build
+
+      - name: Create macOS ZIP
+        run: |
+          TAG=${{ env.VERSION }}
+          PKG="maxim-broadcast-${TAG}-macos"
+          mkdir -p "$PKG/backend" "$PKG/frontend"
+
+          cp -r backend/src backend/package.json backend/.env.example "$PKG/backend/"
+          cp -r frontend/dist/* "$PKG/frontend/"
+          cp README.md RELEASE_NOTES.md "$PKG/"
+          cp assets/icon.png "$PKG/" 2>/dev/null || true
+
+          cat > "$PKG/start.command" << 'EOF'
+          #!/bin/bash
+          cd "$(dirname "$0")/backend"
+          [ ! -f .env ] && cp .env.example .env
+          npm install --omit=dev
+          node src/index.js &
+          sleep 2
+          open http://localhost:4000
+          EOF
+          chmod +x "$PKG/start.command"
+
+          zip -r "${PKG}.zip" "$PKG"
+
+      - name: Upload macOS package
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-package
+          path: maxim-broadcast-*-macos*.zip
+
+  # ─────────────────────────────────────────────
+  # PUBLISH GITHUB RELEASE
+  # ─────────────────────────────────────────────
+  publish:
+    name: Publish Release
+    needs: [package-linux, package-windows, package-macos]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all packages
+        uses: actions/download-artifact@v4
+        with:
+          path: release-files
+          merge-multiple: true
+
+      - name: Generate SHA256 checksums
+        run: |
+          cd release-files
+          sha256sum *.tar.gz *.deb *.zip 2>/dev/null > ../SHA256SUMS.txt || true
+          cat ../SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: "Maxim Broadcast ${{ env.VERSION }}"
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: ${{ contains(env.VERSION, 'beta') || contains(env.VERSION, 'rc') || contains(env.VERSION, 'alpha') }}
+          files: |
+            release-files/*.tar.gz
+            release-files/*.deb
+            release-files/*.zip
+            SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

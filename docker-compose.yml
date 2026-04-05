@@ -1,0 +1,27 @@
+services:
+  app:
+    image: luisitoys12/maxim-broadcast:latest
+    build: .
+    container_name: maxim-broadcast
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - FRONTEND_URL=http://localhost:4000
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production}
+      - MEDIA_STORAGE_PATH=/data/media
+      - LOG_LEVEL=info
+    volumes:
+      - maxim-media:/data/media
+      - maxim-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  maxim-media:
+  maxim-logs:
