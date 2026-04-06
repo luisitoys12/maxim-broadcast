@@ -88,7 +88,7 @@ export default function NewsBulletin() {
             <p className="text-xs text-gray-400">Upgrade a Premium para clonación de voz personalizada</p>
           </div>
         </div>
-        <a href="https://wa.me/59891782920" target="_blank" rel="noopener"
+        <a href="https://wa.me/524622461396" target="_blank" rel="noopener"
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-yellow-600/20 border border-yellow-500/50 text-yellow-400 text-xs font-medium hover:bg-yellow-600/30">
           <Crown size={14} /> Premium
         </a>

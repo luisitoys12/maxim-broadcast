@@ -154,7 +154,7 @@ cd maxim-broadcast
 
 > **Pagos vía offline** — transferencia, depósito o el método que prefieras.
 
-**Pide tu licencia:** WhatsApp [+598 91 782 920](https://wa.me/59891782920)
+**Pide tu licencia:** WhatsApp [+52 462 246 1396](https://wa.me/524622461396) — **RadioAventuraMX**
 
 ---
 
