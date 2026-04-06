@@ -56,6 +56,9 @@ app.use(express.urlencoded({ extended: true }));
 const frontendDist = join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendDist));
 
+// Serve generated audio files (TTS, bulletins)
+app.use('/audio', express.static(join(__dirname, '../uploads/audio')));
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', version: '1.0.0-beta', timestamp: new Date().toISOString() });

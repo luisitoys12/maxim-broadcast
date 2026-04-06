@@ -1,10 +1,9 @@
 import { logger } from '../index.js';
 import { v4 as uuidv4 } from 'uuid';
+import { generateTTS } from '../lib/tts.js';
 
-// In-memory bulletin store
 let bulletins = [];
 
-// Microsoft TTS voices (free tier)
 const VOICES = [
   { id: 'es-MX-DaliaNeural', name: 'Dalia (México)', lang: 'es-MX', gender: 'F' },
   { id: 'es-MX-JorgeNeural', name: 'Jorge (México)', lang: 'es-MX', gender: 'M' },
@@ -15,7 +14,7 @@ const VOICES = [
   { id: 'en-US-GuyNeural', name: 'Guy (English)', lang: 'en-US', gender: 'M' },
 ];
 
-const NEWS_TEMPLATES = {
+const TEMPLATES = {
   general: (items) => `Boletín informativo. ${items.join('. ')}. Esto ha sido su boletín de noticias.`,
   radio: (items) => `¡Atención oyentes! Les traemos las noticias más importantes de la hora. ${items.join('. ')}. Seguimos con la mejor programación.`,
   formal: (items) => `Buenas tardes. A continuación, el resumen informativo. ${items.join('. ')}. Gracias por su atención.`,
@@ -23,7 +22,7 @@ const NEWS_TEMPLATES = {
 
 class NewsController {
   getVoices = (req, res) => {
-    res.json({ voices: VOICES, templates: Object.keys(NEWS_TEMPLATES) });
+    res.json({ voices: VOICES, templates: Object.keys(TEMPLATES) });
   };
 
   getBulletins = (req, res) => {
@@ -34,7 +33,7 @@ class NewsController {
     const { headlines, voice, template, title } = req.body;
     if (!headlines?.length) return res.status(400).json({ error: 'headlines array required' });
 
-    const tpl = NEWS_TEMPLATES[template] || NEWS_TEMPLATES.general;
+    const tpl = TEMPLATES[template] || TEMPLATES.general;
     const script = tpl(headlines);
     const selectedVoice = VOICES.find(v => v.id === voice) || VOICES[0];
 
@@ -45,47 +44,44 @@ class NewsController {
       script,
       voice: selectedVoice,
       template: template || 'general',
-      status: 'ready', // ready | generating_audio | done
+      status: 'ready',
       audioUrl: null,
       createdAt: new Date().toISOString()
     };
 
     bulletins.push(bulletin);
-    logger.info(`News bulletin created: ${bulletin.title} (${headlines.length} headlines)`);
+    logger.info(`Bulletin created: ${bulletin.title}`);
     res.status(201).json({ bulletin });
   };
 
   deleteBulletin = (req, res) => {
     const { id } = req.params;
     const i = bulletins.findIndex(b => b.id === id);
-    if (i === -1) return res.status(404).json({ error: 'Bulletin not found' });
+    if (i === -1) return res.status(404).json({ error: 'Not found' });
     bulletins.splice(i, 1);
     res.json({ success: true });
   };
 
-  // Generate TTS audio (simulated — returns SSML for real Microsoft TTS integration)
-  generateAudio = (req, res) => {
+  // REAL TTS — generates actual MP3 audio using Microsoft Edge-TTS
+  generateAudio = async (req, res) => {
     const { id } = req.params;
     const bulletin = bulletins.find(b => b.id === id);
-    if (!bulletin) return res.status(404).json({ error: 'Bulletin not found' });
+    if (!bulletin) return res.status(404).json({ error: 'Not found' });
 
-    const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${bulletin.voice.lang}">
-  <voice name="${bulletin.voice.id}">
-    <prosody rate="medium" pitch="medium">
-      ${bulletin.script}
-    </prosody>
-  </voice>
-</speak>`;
+    bulletin.status = 'generating';
+    try {
+      const result = await generateTTS(bulletin.script, bulletin.voice.id);
+      bulletin.status = 'done';
+      bulletin.audioUrl = result.url;
+      bulletin.audioFile = result.filename;
 
-    bulletin.status = 'done';
-    bulletin.ssml = ssml;
-    logger.info(`TTS SSML generated for bulletin: ${bulletin.id}`);
-
-    res.json({
-      bulletin,
-      ssml,
-      instructions: 'Send this SSML to Microsoft Azure Speech API or use the built-in TTS engine'
-    });
+      logger.info(`Bulletin audio READY: ${result.filename}`);
+      res.json({ bulletin, audioUrl: result.url });
+    } catch (err) {
+      bulletin.status = 'error';
+      logger.error(`Bulletin TTS failed: ${err.message}`);
+      res.status(500).json({ error: `TTS failed: ${err.message}` });
+    }
   };
 }
 
