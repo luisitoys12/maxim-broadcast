@@ -4,6 +4,7 @@ import sceneController from '../controllers/sceneController.js';
 import streamController from '../controllers/streamController.js';
 import mediaController, { upload } from '../controllers/mediaController.js';
 import authController from '../controllers/authController.js';
+import radioSyncController from '../controllers/radioSyncController.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -49,5 +50,21 @@ router.get('/playout/schedule', requireAuth, mediaController.getSchedule);
 router.post('/playout/schedule', requireAuth, mediaController.createScheduleItem);
 router.put('/playout/schedule/:id', requireAuth, mediaController.updateScheduleItem);
 router.delete('/playout/schedule/:id', requireAuth, mediaController.deleteScheduleItem);
+
+// RadioSync — Cabina Inteligente
+router.post('/radiosync/session/start', requireAuth, radioSyncController.startSession);
+router.post('/radiosync/session/end', requireAuth, radioSyncController.endSession);
+router.get('/radiosync/messages', requireAuth, radioSyncController.getMessages);
+router.post('/radiosync/messages', requireAuth, radioSyncController.postMessage);
+router.delete('/radiosync/messages/:id', requireAuth, radioSyncController.deleteMessage);
+router.get('/radiosync/ia', requireAuth, radioSyncController.getIAStatus);
+router.post('/radiosync/ia/toggle', requireAuth, radioSyncController.toggleIA);
+router.post('/radiosync/ia/generate', requireAuth, radioSyncController.generateNow);
+router.get('/radiosync/suggestions', requireAuth, radioSyncController.getSuggestions);
+router.get('/radiosync/metrics', requireAuth, radioSyncController.getMetrics);
+router.get('/radiosync/listeners', requireAuth, radioSyncController.getListeners);
+router.get('/radiosync/automation', requireAuth, radioSyncController.getAutoConfig);
+router.put('/radiosync/automation', requireAuth, radioSyncController.updateAutoConfig);
+router.post('/radiosync/whatsapp', radioSyncController.whatsappWebhook); // public webhook
 
 export default router;

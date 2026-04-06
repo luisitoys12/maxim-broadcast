@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home, Layers, Radio, Film, Calendar, LogOut } from 'lucide-react'
+import { Home, Layers, Radio, Film, Calendar, LogOut, Mic } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { useSocketStore } from '../store/socketStore'
 
@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Streaming', href: '/stream', icon: Radio },
   { name: 'Biblioteca', href: '/media', icon: Film },
   { name: 'Playout', href: '/playout', icon: Calendar },
+  { name: 'RadioSync', href: '/radiosync', icon: Mic },
 ]
 
 export default function Layout({ children }) {

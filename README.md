@@ -112,6 +112,38 @@ cd maxim-broadcast
 | IA: subtitulos, auto-framing, chroma key inteligente | 📋 Planeado |
 | Colaboracion multi-usuario en tiempo real | 📋 Planeado |
 
+---
+
+## RadioSync — Cabina Inteligente con IA
+
+<p align="center">
+  <img src="assets/radiosync-promo.jpg" width="600" alt="RadioSync"/>
+</p>
+
+**RadioSync** es el módulo de radio inteligente integrado en Maxim Broadcast. Convierte tu emisora en una cabina automatizada con IA.
+
+### Funciones principales
+
+| Módulo | Descripción |
+|--------|------------|
+| **Cabina en Vivo** | Panel central con mensajes ordenados por prioridad, identificación de pedidos de canciones y filtro de spam automático |
+| **Conducción IA** | La IA conduce la radio sola — genera intervenciones, mantiene el ritmo, saludos y menciones sin operador |
+| **Integración WhatsApp** | Recepción de mensajes en tiempo real, identificación de oyentes recurrentes, respuestas rápidas |
+| **IA Asistente** | Sugerencias de contenido, ideas para hablar al aire, detección de tendencias |
+| **Métricas en Tiempo Real** | Oyentes activos, mensajes/minuto, nivel de interacción, alertas de actividad |
+| **Automatización** | Auto respuestas, mensajes automáticos, organización y filtro de spam |
+
+> **RadioSync no reemplaza tu software de radio… lo potencia.**
+> Ahora incluso puede conducir o mantener la emisora activa 24/7.
+
+### Licencia RadioSync
+
+Licencia vitalicia multidispositivos. Por el mes de Abril incluye de regalo la licencia de **RadioClip** (creador de contenido para redes basado en tus transmisiones).
+
+Contacto: **WhatsApp +598 91 782 920**
+
+---
+
 ### Compatibilidad con OBS
 
 Maxim Broadcast mantiene **compatibilidad directa** con el ecosistema OBS:
