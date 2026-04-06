@@ -55,17 +55,34 @@
 
 ## ¿Qué es?
 
-**Maxim Broadcast es un fork de OBS Studio** que extiende el motor de captura y streaming de OBS con:
+**Maxim Broadcast es un panel de control remoto para OBS Studio.** El streamer IRL instala Maxim en su servidor privado, entra por IP desde cualquier dispositivo (celular, tablet, laptop) y controla su OBS a distancia.
 
-- Un **panel web** accesible desde cualquier navegador o dispositivo
-- Un **backend Node.js** que expone la funcionalidad de libobs via API REST y WebSocket
-- **IA integrada** para subtítulos, auto-framing, chroma key y generación de gráficos
-- **Playout 24/7** para operar canales de TV automatizados
-- **Lower thirds, templates y editor dual** sin salir del navegador
+- **Controla OBS Studio** desde cualquier navegador via obs-websocket v5
+- **Escenas, fuentes, audio, transiciones, streaming** — todo remoto
+- **Preview en vivo** con screenshots del programa actual
+- **RadioSync** — cabina inteligente con IA para radio en vivo
+- **Playout 24/7** — programación automática de contenido
+- **Boletín de noticias** con voces IA de Microsoft (gratis)
+- **Modo standalone** — si no tienes OBS, transmite directo con FFmpeg
 
-A diferencia de OBS Studio (interfaz Qt local), Maxim Broadcast se controla completamente vía web — ideal para estudios remotos, canales de radio/TV y productoras que necesitan acceso desde múltiples dispositivos.
+### Cómo funciona
 
-El **core de captura, encoding y streaming sigue siendo libobs** (el mismo motor de OBS). Lo que Maxim agrega es la capa de control web, automatización e IA encima.
+```
+┌───────────────────────────────────────────────┐
+│   Tu celular / tablet / laptop            │
+│   Entras a http://TU-SERVIDOR-IP:4000     │
+└───────────────────────┬───────────────────────┘
+                        │ HTTP + WebSocket
+┌───────────────────────▼───────────────────────┐
+│     Tu servidor privado                    │
+│     Maxim Broadcast (Node.js :4000)        │
+└───────────────────────┬───────────────────────┘
+                        │ obs-websocket v5
+┌───────────────────────▼───────────────────────┐
+│     OBS Studio (corriendo en el server)     │
+│     Captura → Encoding → RTMP              │
+└───────────────────────────────────────────────┘
+```
 
 ---
 
