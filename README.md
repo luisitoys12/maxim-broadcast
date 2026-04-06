@@ -35,6 +35,24 @@
 
 ---
 
+## Capturas de Pantalla
+
+| Dashboard | RadioSync — Cabina en Vivo |
+|:---------:|:--------------------------:|
+| ![Dashboard](assets/screenshots/01-dashboard.png) | ![RadioSync](assets/screenshots/06-radiosync.png) |
+
+| Conducción IA | Boletín de Noticias |
+|:-------------:|:-------------------:|
+| ![IA](assets/screenshots/07-radiosync-ia.png) | ![Noticias](assets/screenshots/09-news.png) |
+
+| Escenas | Streaming | Login |
+|:-------:|:---------:|:-----:|
+| ![Escenas](assets/screenshots/02-scenes.png) | ![Streaming](assets/screenshots/03-streaming.png) | ![Login](assets/screenshots/10-login.png) |
+
+> 🎬 [Ver video demo](https://github.com/luisitoys12/maxim-broadcast/releases/download/v1.3.1/maxim-broadcast-demo.mp4)
+
+---
+
 ## ¿Qué es?
 
 **Maxim Broadcast es un fork de OBS Studio** que extiende el motor de captura y streaming de OBS con:
