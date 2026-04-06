@@ -11,6 +11,7 @@ import StreamSettings from './pages/StreamSettings'
 import MediaLibrary from './pages/MediaLibrary'
 import Playout from './pages/Playout'
 import RadioSync from './pages/RadioSync'
+import NewsBulletin from './pages/NewsBulletin'
 
 function Protected({ children }) {
   const token = useAuthStore(s => s.token)
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/media" element={<MediaLibrary />} />
                 <Route path="/playout" element={<Playout />} />
                 <Route path="/radiosync" element={<RadioSync />} />
+                <Route path="/news" element={<NewsBulletin />} />
               </Routes>
             </Layout>
           </Protected>

@@ -5,6 +5,7 @@ import streamController from '../controllers/streamController.js';
 import mediaController, { upload } from '../controllers/mediaController.js';
 import authController from '../controllers/authController.js';
 import radioSyncController from '../controllers/radioSyncController.js';
+import newsController from '../controllers/newsController.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -66,5 +67,12 @@ router.get('/radiosync/listeners', requireAuth, radioSyncController.getListeners
 router.get('/radiosync/automation', requireAuth, radioSyncController.getAutoConfig);
 router.put('/radiosync/automation', requireAuth, radioSyncController.updateAutoConfig);
 router.post('/radiosync/whatsapp', radioSyncController.whatsappWebhook); // public webhook
+
+// News Bulletin (free)
+router.get('/news/voices', requireAuth, newsController.getVoices);
+router.get('/news/bulletins', requireAuth, newsController.getBulletins);
+router.post('/news/bulletins', requireAuth, newsController.createBulletin);
+router.delete('/news/bulletins/:id', requireAuth, newsController.deleteBulletin);
+router.post('/news/bulletins/:id/audio', requireAuth, newsController.generateAudio);
 
 export default router;

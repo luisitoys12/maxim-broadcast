@@ -136,11 +136,25 @@ cd maxim-broadcast
 > **RadioSync no reemplaza tu software de radio… lo potencia.**
 > Ahora incluso puede conducir o mantener la emisora activa 24/7.
 
-### Licencia RadioSync
+### Planes y Licencias
 
-Licencia vitalicia multidispositivos. Por el mes de Abril incluye de regalo la licencia de **RadioClip** (creador de contenido para redes basado en tus transmisiones).
+| | **Free** | **Premium** |
+|:--|:--------:|:-----------:|
+| Boletín de noticias IA | ✅ Gratis | ✅ |
+| Voces IA (Microsoft TTS) | ✅ Gratis | ✅ |
+| Cabina inteligente en vivo | ✅ Gratis | ✅ |
+| Filtro de spam + auto-organización | ✅ Gratis | ✅ |
+| Métricas en tiempo real | ✅ Gratis | ✅ |
+| Conducción IA autónoma | — | ✅ |
+| Clonación de voz personalizada | — | ✅ |
+| Integración WhatsApp | — | ✅ |
+| RadioClip (contenido para redes) | — | ✅ Incluido en Abril |
+| **Licencia** | Gratis | **Vitalicia · Multidispositivos** |
+| **Precio** | $0 | Consultar |
 
-Contacto: **WhatsApp +598 91 782 920**
+> **Pagos vía offline** — transferencia, depósito o el método que prefieras.
+
+**Pide tu licencia:** WhatsApp [+598 91 782 920](https://wa.me/59891782920)
 
 ---
 
