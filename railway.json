@@ -1,0 +1,27 @@
+{
+  "name": "Maxim Broadcast",
+  "description": "Fork profesional de OBS con panel web, IA y automatización para broadcast 24/7",
+  "variables": {
+    "NODE_ENV": "production",
+    "PORT": "4000",
+    "DB_TYPE": "sqlite",
+    "DB_PATH": "./db/maxim.db",
+    "LOG_LEVEL": "info",
+    "DEMO_MODE": "false"
+  },
+  "services": [
+    {
+      "name": "maxim-broadcast",
+      "build": {
+        "dockerfile": "Dockerfile.prod"
+      },
+      "deploy": {
+        "startCommand": "node src/index.js",
+        "healthcheckPath": "/api/health",
+        "healthcheckTimeout": 300,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 5
+      }
+    }
+  ]
+}

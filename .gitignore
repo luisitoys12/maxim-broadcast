@@ -37,6 +37,11 @@
 !README.rst
 !CHANGELOG.md
 !INSTALL_GUIDE.md
+!RAILWAY.md
+!Dockerfile.prod
+!railway.json
+!docker-compose.prod.yml
+!/.railway
 !build-all.sh
 !build-linux.sh
 !build-macos.sh
