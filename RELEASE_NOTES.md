@@ -24,6 +24,7 @@ Esta es la versión más completa y funcional de Maxim Broadcast hasta la fecha.
 - **Windows** — instalador `.exe` con wizard visual (Welcome → Licencia → Directorio → Finish)
 - **Linux** — paquete `.deb` para Debian/Ubuntu + AppImage universal
 - **macOS** — imagen `.dmg` lista para arrastrar a Aplicaciones
+- **Android** — APK para control remoto del panel desde dispositivos móviles
 
 ### 📥 Descargas
 
@@ -34,6 +35,7 @@ Esta es la versión más completa y funcional de Maxim Broadcast hasta la fecha.
 | Linux Debian/Ubuntu | `maxim-broadcast-v1.4.0-linux-amd64.deb` |
 | Linux universal | `maxim-broadcast-v1.4.0-linux-x64.tar.gz` |
 | macOS | `maxim-broadcast-v1.4.0-macos.zip` |
+| Android | `maxim-broadcast-v1.4.0-android.apk` |
 
 ### ⚙️ Instalación Rápida
 
@@ -53,10 +55,30 @@ maxim-broadcast
 2. Descomprimir y ejecutar `start.command`
 3. Abrir http://localhost:4000 en el navegador
 
+#### Android
+1. Descargar `maxim-broadcast-v1.4.0-android.apk`
+2. En el dispositivo Android, habilitar "Fuentes desconocidas" en Ajustes → Seguridad
+3. Instalar el APK y abrir la aplicación
+4. Introducir la IP y puerto del servidor Maxim Broadcast
+
 ### 🔗 Requisitos
 - Node.js 18+ (incluido en los instaladores)
 - OBS Studio 29+ con obs-websocket v5 (opcional, para control remoto)
 - 2 GB RAM mínimo, 4 GB recomendado
+- Android 8.0+ (API 26) para la app móvil
+
+---
+
+## v1.3.2 — Build & Release Multiplataforma
+
+**Fecha:** Abril 2026
+**Tipo:** Patch Release
+
+### Novedades
+
+- Workflow de GitHub Actions unificado para construcción y publicación automática en todas las plataformas
+- Soporte inicial para versión móvil Android (APK)
+- Generación automática de checksums SHA256 para todos los artefactos de lanzamiento
 
 ---
 
