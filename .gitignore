@@ -5,6 +5,10 @@
 !/.github
 !/build-aux
 !/cmake
+!/.devcontainer
+!/scripts
+!/CODESPACES.md
+!/backend
 !/deps
 !/docs
 !/frontend
