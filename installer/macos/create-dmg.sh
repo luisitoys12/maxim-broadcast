@@ -5,7 +5,7 @@
 set -e
 
 APP_NAME="Maxim Broadcast"
-VERSION="1.0.0"
+VERSION="1.4.0"
 DMG_NAME="maxim-broadcast-${VERSION}-macos-universal"
 BUILD_DIR="../../build"
 
