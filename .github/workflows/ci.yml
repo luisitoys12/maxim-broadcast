@@ -73,9 +73,66 @@ jobs:
           path: frontend/dist/
           retention-days: 3
 
+  codespaces-setup:
+    name: Codespaces Setup Verification
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend deps
+        run: cd backend && npm ci
+
+      - name: Install frontend deps
+        run: cd frontend && npm ci
+
+      - name: Build frontend
+        run: cd frontend && npm run build
+
+      - name: Validate devcontainer.json exists
+        run: test -f .devcontainer/devcontainer.json && echo "devcontainer.json found"
+
+      - name: Validate setup scripts exist
+        run: |
+          test -f scripts/setup-codespace.sh    && echo "setup-codespace.sh found"
+          test -f scripts/start-demo.sh         && echo "start-demo.sh found"
+          test -f scripts/generate-demo-data.js && echo "generate-demo-data.js found"
+          test -f backend/db/demo-data.sql      && echo "demo-data.sql found"
+
+      - name: Start backend, verify health, seed and test demo login
+        run: |
+          cd backend
+          cp .env.example .env
+          printf 'DEMO_MODE=true\nCODESPACE_MODE=true\n' >> .env
+          node src/index.js &
+          SERVER_PID=$!
+          for i in $(seq 1 15); do
+            curl -sf http://localhost:4000/health && break
+            [ "$i" -eq 15 ] && { kill "$SERVER_PID"; exit 1; }
+            sleep 1
+          done
+          node ../scripts/generate-demo-data.js http://localhost:4000
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST http://localhost:4000/api/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"admin@demo.com","password":"demo123"}')
+          echo "Login HTTP status: $HTTP_STATUS"
+          [ "$HTTP_STATUS" = "200" ] || { echo "Demo login failed"; kill "$SERVER_PID"; exit 1; }
+          echo "Demo login successful"
+          kill "$SERVER_PID"
+
   all-green:
     name: All checks passed
-    needs: [backend, frontend]
+    needs: [backend, frontend, codespaces-setup]
     runs-on: ubuntu-22.04
     steps:
       - run: echo "CI passed ✅"

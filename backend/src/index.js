@@ -14,6 +14,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import apiRoutes from './routes/api.js';
 import { socketHandler } from './websocket/socketHandler.js';
 import obsController from './controllers/obsController.js';
+import corsCodespaces from './middleware/cors-codespaces.js';
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(helmet());
+app.use(corsCodespaces);
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
