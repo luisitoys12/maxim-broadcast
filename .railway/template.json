@@ -1,0 +1,67 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "template": {
+    "name": "Maxim Broadcast",
+    "description": "Fork profesional de OBS Studio con panel web, IA y automatización para broadcast 24/7. Control remoto de OBS, RadioSync, playout 24/7 y boletines de noticias con IA.",
+    "tags": ["nodejs", "broadcast", "obs", "radio", "streaming"],
+    "icon": "https://raw.githubusercontent.com/luisitoys12/maxim-broadcast/main/assets/icon.png",
+    "readme": "https://raw.githubusercontent.com/luisitoys12/maxim-broadcast/main/RAILWAY.md"
+  },
+  "services": {
+    "maxim-broadcast": {
+      "name": "maxim-broadcast",
+      "build": {
+        "dockerfile": "Dockerfile.prod"
+      },
+      "deploy": {
+        "startCommand": "node src/index.js",
+        "healthcheckPath": "/api/health",
+        "healthcheckTimeout": 300,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 5
+      },
+      "variables": {
+        "NODE_ENV": {
+          "default": "production",
+          "description": "Application environment"
+        },
+        "PORT": {
+          "default": "4000",
+          "description": "Server port (Railway sets this automatically)"
+        },
+        "JWT_SECRET": {
+          "description": "Secret key for JWT tokens — generate a random string of 32+ characters",
+          "required": true
+        },
+        "DB_TYPE": {
+          "default": "sqlite",
+          "description": "Database type: sqlite (default) or postgres"
+        },
+        "DB_PATH": {
+          "default": "./db/maxim.db",
+          "description": "SQLite database file path"
+        },
+        "LOG_LEVEL": {
+          "default": "info",
+          "description": "Logging level: error, warn, info, debug"
+        },
+        "DEMO_MODE": {
+          "default": "false",
+          "description": "Enable demo mode with pre-loaded data"
+        },
+        "OBS_WS_HOST": {
+          "default": "",
+          "description": "OBS WebSocket host (optional — leave empty for standalone mode)"
+        },
+        "OBS_WS_PORT": {
+          "default": "4455",
+          "description": "OBS WebSocket port"
+        },
+        "OBS_WS_PASSWORD": {
+          "default": "",
+          "description": "OBS WebSocket password"
+        }
+      }
+    }
+  }
+}

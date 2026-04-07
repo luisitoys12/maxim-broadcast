@@ -27,6 +27,7 @@
 <p align="center">
   <a href="#-que-es">¿Qué es?</a> •
   <a href="#-descargas">Descargas</a> •
+  <a href="#-deploy-en-railway">Railway</a> •
   <a href="#-caracteristicas">Caracteristicas</a> •
   <a href="#-arquitectura">Arquitectura</a> •
   <a href="#-compilar">Compilar</a> •
@@ -111,6 +112,26 @@ git clone --recursive https://github.com/luisitoys12/maxim-broadcast.git
 cd maxim-broadcast
 # Ver BUILD_INSTRUCTIONS.md para instrucciones completas por plataforma
 ```
+
+---
+
+## 🚀 Deploy en Railway
+
+Despliega Maxim Broadcast en la nube con **un solo clic** — gratis en Railway:
+
+<p align="center">
+  <a href="https://railway.app/new/template?template=https://github.com/luisitoys12/maxim-broadcast">
+    <img src="https://railway.app/button.svg" alt="Deploy on Railway" height="44"/>
+  </a>
+</p>
+
+| Variable requerida | Valor |
+|--------------------|-------|
+| `JWT_SECRET` | cadena aleatoria de 32+ caracteres |
+| `NODE_ENV` | `production` |
+| `PORT` | `4000` (Railway lo asigna automáticamente) |
+
+> 📖 Ver **[RAILWAY.md](RAILWAY.md)** para instrucciones completas, configuración de CI/CD y troubleshooting.
 
 ---
 

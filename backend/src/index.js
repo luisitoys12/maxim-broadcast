@@ -12,6 +12,7 @@ import { join, dirname } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import apiRoutes from './routes/api.js';
+import healthRoutes from './routes/health.js';
 import { socketHandler } from './websocket/socketHandler.js';
 import obsController from './controllers/obsController.js';
 import corsCodespaces from './middleware/cors-codespaces.js';
@@ -61,12 +62,13 @@ app.use(express.static(frontendDist));
 // Serve generated audio files (TTS, bulletins)
 app.use('/audio', express.static(join(__dirname, '../uploads/audio')));
 
-// Health check
+// Health check (also exposed at /health for backwards compatibility)
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', version: '1.0.0-beta', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', version: process.env.npm_package_version || '1.4.0', timestamp: new Date().toISOString() });
 });
 
-// API Routes
+// API Routes (includes /api/health)
+app.use('/api', healthRoutes);
 app.use('/api', apiRoutes);
 
 // SPA fallback — must be after /api routes
