@@ -1,5 +1,65 @@
 # Release Notes
 
+## v1.4.0 — Ultra Beta 🚀
+
+**Fecha:** Abril 2026
+**Tipo:** Ultra Beta Release
+
+Esta es la versión más completa y funcional de Maxim Broadcast hasta la fecha. Incluye RadioSync con IA, integración WhatsApp, boletín de noticias automatizado e instaladores para todas las plataformas.
+
+### 🆕 Novedades Principales
+
+#### RadioSync con IA
+- **Cabina inteligente** — conducción autónoma sin operador humano
+- **Generación de locuciones IA** — intervenciones automáticas en tiempo real
+- **Integración WhatsApp** — mensajes de oyentes/espectadores en directo
+- **Filtro de spam** — clasificación automática por prioridad
+
+#### Métricas en Tiempo Real
+- Oyentes activos, mensajes/min, nivel de interacción
+- Stats de transmisión: FPS, bitrate, CPU, frames perdidos
+- Panel WebSocket sin necesidad de recargar
+
+#### Instaladores Multiplataforma
+- **Windows** — instalador `.exe` con wizard visual (Welcome → Licencia → Directorio → Finish)
+- **Linux** — paquete `.deb` para Debian/Ubuntu + AppImage universal
+- **macOS** — imagen `.dmg` lista para arrastrar a Aplicaciones
+
+### 📥 Descargas
+
+| Plataforma | Archivo |
+|-----------|---------|
+| Windows 64-bit | `maxim-broadcast-v1.4.0-windows-x64-setup.exe` |
+| Windows portable | `maxim-broadcast-v1.4.0-windows-x64.zip` |
+| Linux Debian/Ubuntu | `maxim-broadcast-v1.4.0-linux-amd64.deb` |
+| Linux universal | `maxim-broadcast-v1.4.0-linux-x64.tar.gz` |
+| macOS | `maxim-broadcast-v1.4.0-macos.zip` |
+
+### ⚙️ Instalación Rápida
+
+#### Windows
+1. Descargar `maxim-broadcast-v1.4.0-windows-x64-setup.exe`
+2. Ejecutar como administrador y seguir el wizard
+3. Lanzar desde Inicio → Maxim Broadcast o ir a http://localhost:4000
+
+#### Linux (Debian/Ubuntu)
+```bash
+sudo dpkg -i maxim-broadcast-v1.4.0-linux-amd64.deb
+maxim-broadcast
+```
+
+#### macOS
+1. Descargar `maxim-broadcast-v1.4.0-macos.zip`
+2. Descomprimir y ejecutar `start.command`
+3. Abrir http://localhost:4000 en el navegador
+
+### 🔗 Requisitos
+- Node.js 18+ (incluido en los instaladores)
+- OBS Studio 29+ con obs-websocket v5 (opcional, para control remoto)
+- 2 GB RAM mínimo, 4 GB recomendado
+
+---
+
 ## v1.1.0 — Backend + Frontend Funcional
 
 **Fecha:** Abril 2026  

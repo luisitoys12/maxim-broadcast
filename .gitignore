@@ -31,6 +31,12 @@
 !COPYING
 !INSTALL
 !README.rst
+!CHANGELOG.md
+!INSTALL_GUIDE.md
+!build-all.sh
+!build-linux.sh
+!build-macos.sh
+!build-windows.sh
 
 # Exclude lock files
 *.lock.json

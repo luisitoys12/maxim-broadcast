@@ -1,6 +1,6 @@
 {
   "name": "maxim-broadcast-frontend",
-  "version": "1.0.0-beta",
+  "version": "1.4.0",
   "description": "Frontend web interface for Maxim Broadcast",
   "private": true,
   "type": "module",

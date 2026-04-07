@@ -9,7 +9,7 @@ on:
       tag:
         description: 'Tag de versión (ej: v1.2.0)'
         required: true
-        default: 'v1.1.0'
+        default: 'v1.4.0'
 
 permissions:
   contents: write
@@ -166,7 +166,7 @@ jobs:
             maxim-broadcast-*-linux-*.deb
 
   # ─────────────────────────────────────────────
-  # PACKAGE WINDOWS (.zip portable)
+  # PACKAGE WINDOWS (.zip portable + .exe NSIS)
   # ─────────────────────────────────────────────
   package-windows:
     name: Package Windows
@@ -196,25 +196,106 @@ jobs:
           Copy-Item backend/.env.example "$pkg/backend/.env.example"
           Copy-Item -Recurse frontend/dist/* "$pkg/frontend/"
           Copy-Item README.md, RELEASE_NOTES.md "$pkg/"
+          if (Test-Path INSTALL_GUIDE.md) { Copy-Item INSTALL_GUIDE.md "$pkg/" }
           if (Test-Path assets/icon.png) { Copy-Item assets/icon.png "$pkg/" }
 
           @'
           @echo off
+          title Maxim Broadcast
           cd /d "%~dp0backend"
           if not exist .env copy .env.example .env
           npm install --omit=dev
           start /b node src/index.js
-          timeout /t 2
+          timeout /t 2 /nobreak >nul
           start http://localhost:4000
           '@  | Out-File -Encoding ASCII "$pkg/start.bat"
 
           Compress-Archive -Path "$pkg/*" -DestinationPath "${pkg}.zip"
 
-      - name: Upload Windows package
+      - name: Build NSIS .exe installer
+        shell: pwsh
+        run: |
+          $tag = "${{ env.VERSION }}"
+          $ver = $tag.TrimStart('v')
+
+          # Prepare staging directory for NSIS
+          $stage = "nsis-stage"
+          New-Item -ItemType Directory -Path "$stage/backend", "$stage/frontend" -Force
+
+          Copy-Item -Recurse backend/src "$stage/backend/src"
+          Copy-Item backend/package.json "$stage/backend/"
+          Copy-Item backend/.env.example "$stage/backend/.env.example"
+          Copy-Item -Recurse frontend/dist/* "$stage/frontend/"
+          if (Test-Path assets/icon.png) { Copy-Item assets/icon.png "$stage/" }
+          if (Test-Path INSTALL_GUIDE.md) { Copy-Item INSTALL_GUIDE.md "$stage/" }
+          Copy-Item README.md, RELEASE_NOTES.md "$stage/"
+
+          # Generate start.bat for the installed app
+          @'
+          @echo off
+          title Maxim Broadcast
+          cd /d "%~dp0backend"
+          if not exist .env copy .env.example .env
+          npm install --omit=dev
+          start /b node src/index.js
+          timeout /t 2 /nobreak >nul
+          start http://localhost:4000
+          '@ | Out-File -Encoding ASCII "$stage/start.bat"
+
+          # Build the installer using makensis (pre-installed on windows-2022)
+          $nsiScript = @"
+          !include "MUI2.nsh"
+          Name "Maxim Broadcast $tag"
+          OutFile "maxim-broadcast-${tag}-windows-x64-setup.exe"
+          InstallDir "`$PROGRAMFILES64\Maxim Broadcast"
+          InstallDirRegKey HKLM "Software\MaximBroadcast" "InstallDir"
+          RequestExecutionLevel admin
+          !define MUI_WELCOMEPAGE_TITLE "Bienvenido a Maxim Broadcast $tag"
+          !define MUI_WELCOMEPAGE_TEXT "Este asistente instalará Maxim Broadcast en tu computadora.`$\r`$\n`$\r`$\nMaxim Broadcast es una plataforma profesional de broadcast en vivo con IA, RadioSync y playout 24/7."
+          !insertmacro MUI_PAGE_WELCOME
+          !insertmacro MUI_PAGE_LICENSE "COPYING"
+          !insertmacro MUI_PAGE_DIRECTORY
+          !insertmacro MUI_PAGE_INSTFILES
+          !insertmacro MUI_PAGE_FINISH
+          !insertmacro MUI_UNPAGE_CONFIRM
+          !insertmacro MUI_UNPAGE_INSTFILES
+          !insertmacro MUI_LANGUAGE "Spanish"
+          !insertmacro MUI_LANGUAGE "English"
+          Section "Maxim Broadcast" SecCore
+            SectionIn RO
+            SetOutPath "`$INSTDIR"
+            File /r "${stage}\*.*"
+            CreateDirectory "`$SMPROGRAMS\Maxim Broadcast"
+            CreateShortcut "`$SMPROGRAMS\Maxim Broadcast\Maxim Broadcast.lnk" "`$INSTDIR\start.bat"
+            CreateShortcut "`$SMPROGRAMS\Maxim Broadcast\Uninstall.lnk" "`$INSTDIR\uninstall.exe"
+            CreateShortcut "`$DESKTOP\Maxim Broadcast.lnk" "`$INSTDIR\start.bat"
+            WriteRegStr HKLM "Software\MaximBroadcast" "InstallDir" "`$INSTDIR"
+            WriteRegStr HKLM "Software\MaximBroadcast" "Version" "$ver"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MaximBroadcast" "DisplayName" "Maxim Broadcast $tag"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MaximBroadcast" "UninstallString" "`$INSTDIR\uninstall.exe"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MaximBroadcast" "Publisher" "EstacionKusMedia"
+            WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MaximBroadcast" "DisplayVersion" "$ver"
+            WriteUninstaller "`$INSTDIR\uninstall.exe"
+          SectionEnd
+          Section "Uninstall"
+            RMDir /r "`$INSTDIR"
+            RMDir /r "`$SMPROGRAMS\Maxim Broadcast"
+            Delete "`$DESKTOP\Maxim Broadcast.lnk"
+            DeleteRegKey HKLM "Software\MaximBroadcast"
+            DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\MaximBroadcast"
+          SectionEnd
+          "@
+
+          $nsiScript | Out-File -Encoding UTF8 "maxim-broadcast-build.nsi"
+          makensis "maxim-broadcast-build.nsi"
+
+      - name: Upload Windows packages
         uses: actions/upload-artifact@v4
         with:
           name: windows-package
-          path: maxim-broadcast-*-windows-*.zip
+          path: |
+            maxim-broadcast-*-windows-*.zip
+            maxim-broadcast-*-windows-*-setup.exe
 
   # ─────────────────────────────────────────────
   # PACKAGE macOS (.zip)
@@ -285,7 +366,7 @@ jobs:
       - name: Generate SHA256 checksums
         run: |
           cd release-files
-          sha256sum *.tar.gz *.deb *.zip 2>/dev/null > ../SHA256SUMS.txt || true
+          sha256sum *.tar.gz *.deb *.zip *.exe 2>/dev/null > ../SHA256SUMS.txt || true
           cat ../SHA256SUMS.txt
 
       - name: Publish GitHub Release
@@ -300,6 +381,7 @@ jobs:
             release-files/*.tar.gz
             release-files/*.deb
             release-files/*.zip
+            release-files/*.exe
             SHA256SUMS.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

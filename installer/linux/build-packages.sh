@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="1.0.0"
+VERSION="1.4.0"
 ARCH="amd64"
 BUILD_DIR="../../build"
 
