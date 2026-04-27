@@ -1,6 +1,12 @@
-import { logger } from '../index.js';
 import { v4 as uuidv4 } from 'uuid';
 import { spawn } from 'child_process';
+import { createLogger, format, transports } from 'winston';
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(format.timestamp(), format.simple()),
+  transports: [new transports.Console()],
+});
+
 
 const PLATFORMS = {
   youtube:   { rtmpBase: 'rtmp://a.rtmp.youtube.com/live2/',            label: 'YouTube Live' },
@@ -25,7 +31,7 @@ class MultiStreamController {
   addDestination = (req, res) => {
     const { channelId, platform, url, key, label, bitrate, resolution, fps } = req.body;
     if (!platform && !url) return res.status(400).json({ error: 'platform or url required' });
-    const pInfo = PLATFORMS[platform] || PLATFORMS.custom;
+    const pInfo = PLATFORMS[platform] || PLATFORMS[custom];
     const rtmpUrl = url || (pInfo.rtmpBase + (key || ''));
     const dest = {
       id: uuidv4(), channelId: channelId || null, platform: platform || 'custom',
@@ -59,7 +65,7 @@ class MultiStreamController {
     for (const dest of targets) {
       if (dest.status === 'streaming') { results.push({ id: dest.id, status: 'already_streaming' }); continue; }
       try {
-        const args = ['-re', '-i', source, '-c:v', 'libx264', '-preset', 'veryfast', '-b:v', `${dest.bitrate}k`, '-maxrate', `${dest.bitrate}k`, '-bufsize', `${dest.bitrate * 2}k`, '-vf', `scale=${dest.resolution.replace('x', ':')}`, '-r', String(dest.fps), '-c:a', 'aac', '-b:a', '128k', '-ar', '44100', '-f', 'flv', dest.url];
+        const args = ['-re', '-i', source, '-c:v', 'libx264', '-preset', 'veryfast', '-b:v', `${dest.bitrate}k`, '-maxrate', `${dest.bitrate}k`, '-bufsize', `${dest.bitrate * 2}k`, '-vf', `scale=${dest.resolution.replace('x', ':')}`, '-r', String(dest.fps), '-c:a', 'aac', '-b:a', '128k', '-ar', '44100', '-f', 'hlv', dest.url];
         const proc = spawn('ffmpeg', args, { stdio: ['ignore', 'pipe', 'pipe'] });
         dest.pid = proc.pid; dest.status = 'streaming'; dest.startedAt = new Date().toISOString();
         activeProcesses[proc.pid] = proc;
