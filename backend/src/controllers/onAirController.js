@@ -1,5 +1,11 @@
-import { logger } from '../index.js';
 import { v4 as uuidv4 } from 'uuid';
+import { createLogger, format, transports } from 'winston';
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(format.timestamp(), format.simple()),
+  transports: [new transports.Console()],
+});
+
 
 const onAirState = {};
 
