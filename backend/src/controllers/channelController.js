@@ -1,18 +1,14 @@
-import { logger } from '../index.js';
 import { v4 as uuidv4 } from 'uuid';
+import { createLogger, format, transports } from 'winston';
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(format.timestamp(), format.simple()),
+  transports: [new transports.Console()],
+});
+
 
 const CHANNEL_TYPES = ['tv', 'radio', 'podcast', 'livestream', 'iptv'];
-let channels = [
-  {
-    id: uuidv4(),
-    name: 'Canal Principal', type: 'tv', slug: 'principal',
-    description: 'Canal de TV principal', logo: null, color: '#6366f1',
-    active: true, onAir: false, rtmpUrl: '', rtmpKey: '', hlsUrl: '',
-    bitrate: 4000, resolution: '1920x1080', fps: 30, audioChannels: 2,
-    audioBitrate: 192, timezone: 'America/Mexico_City', language: 'es-MX',
-    category: 'general', tags: [], metadata: {}, createdAt: new Date().toISOString(),
-  }
-];
+let channels = [];
 let nowPlaying = {};
 
 class ChannelController {
